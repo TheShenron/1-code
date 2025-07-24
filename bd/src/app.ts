@@ -1,7 +1,7 @@
 import express, { Application } from 'express';
 import cors from 'cors';
 
-import { errorHandler } from './middlewares/error.middleware'; // Optional error middleware
+import { errorHandler } from './middlewares/error.middleware';
 
 // Create express app
 const app: Application = express();
@@ -13,8 +13,10 @@ app.use(cors({
     credentials: true,
 }));
 
-import authRoutes from './routes/auth.routes'; // Example route
-import userRoutes from './routes/user.routes'; // Example route
+import authRoutes from './routes/auth.routes';
+import userRoutes from './routes/user.routes';
+import ticketRoutes from './routes/ticket.routes';
+
 
 
 // Health check route
@@ -25,6 +27,7 @@ app.get('/', (req, res) => {
 // Register routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/ticket', ticketRoutes);
 
 // Global error handler (optional)
 app.use(errorHandler); // Custom error middleware
