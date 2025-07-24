@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import * as userService from '../services/user.service';
+import bcrypt from 'bcrypt';
 
 export const getUsers = async (_req: Request, res: Response) => {
     try {
@@ -18,9 +19,15 @@ export const createUser = async (req: Request, res: Response) => {
             res.status(400).json({ error: 'All fields are required' });
         }
 
-        const newUser = await userService.createUser({ name, email, password });
-        res.status(201).json(newUser);
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const User = await userService.createUser({ name, email, password: hashedPassword });
+        const userObj = User.toObject();
+        delete userObj.password;
+
+        res.status(201).json(userObj);
     } catch (error) {
+        console.log(error)
         res.status(500).json({ error: 'Failed to create user' });
     }
 };

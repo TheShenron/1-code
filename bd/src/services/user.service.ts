@@ -3,7 +3,7 @@ import type { CreateUserDTO } from '../types/user'
 
 
 export const getAllUsers = async (): Promise<IUser[]> => {
-    return User.find();
+    return User.find().select('-password').lean();;
 };
 
 export const createUser = async (userData: CreateUserDTO): Promise<IUser> => {
