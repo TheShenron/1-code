@@ -8,10 +8,11 @@ const app: Application = express();
 
 // Middleware
 app.use(express.json()); // Parse JSON request bodies
-app.use(cors({
-    origin: process.env.CORS_ORIGIN || '*', // CORS setup
-    credentials: true,
-}));
+// app.use(cors({
+//     origin: process.env.CORS_ORIGIN || '*', // CORS setup
+//     credentials: true,
+// }));
+app.use(cors())
 
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
