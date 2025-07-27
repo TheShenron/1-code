@@ -5,7 +5,7 @@ import { verifyToken } from '../middlewares/auth.middleware';
 const router = Router();
 
 // GET /api/users
-router.get('/', verifyToken, getUsers);
+router.get('/', getUsers);
 
 // POST /api/users
 router.post('/', createUser);
