@@ -1,9 +1,10 @@
-import { Routes, Route } from 'react-router-dom';
-import { getRoutesForRole } from '@/app/router/getRoutesForRole';
-import { RoleBasedRoute } from '@/app/router/RoleBasedRoute';
+import { Routes } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/app/store';
 import AppInitializer from '@/app/providers/AppInitializer';
+import { filterRoutesByRole } from '@/app/router/filterRoutesByRole';
+import { routesConfig } from './app/router/routesConfig';
+import { renderRoutes } from './app/router/renderRoutes';
 
 const App = () => {
     const role = useSelector((state: RootState) => state.core.userDetails?.role)
@@ -12,21 +13,11 @@ const App = () => {
         return <AppInitializer />
     }
 
-    const routes = getRoutesForRole(role);
+    const allowedRoutes = filterRoutesByRole(routesConfig, role);
 
     return (
         <Routes>
-            {routes.map((route) => (
-                <Route
-                    key={route.path}
-                    path={route.path}
-                    element={
-                        <RoleBasedRoute allowedRoles={route.roles}>
-                            <route.component />
-                        </RoleBasedRoute>
-                    }
-                />
-            ))}
+            {renderRoutes(allowedRoutes)}
         </Routes>
     );
 };

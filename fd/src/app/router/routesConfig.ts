@@ -10,7 +10,7 @@ export const routesConfig = [
     {
         path: '/dashboard',
         component: DashboardPage,
-        roles: ['ADMIN', 'USER'],
+        roles: ['ADMIN', 'USER', "GUEST"],
         children: [
             {
                 path: 'device',
