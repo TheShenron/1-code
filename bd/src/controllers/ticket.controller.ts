@@ -22,7 +22,6 @@ export const updateTicketState = async (req: Request, res: Response) => {
     }
 
     const previousState = task.currentState;
-    const now = new Date();
 
     if (previousState === 'inprogress' && newState !== 'inprogress') {
         const lastUpdated = task.updatedAt || task.createdAt;

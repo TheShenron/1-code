@@ -7,7 +7,7 @@ const router = express.Router();
 router.post('/', verifyToken, createTicket);
 router.patch('/:id/state', verifyToken, updateTicketState);
 router.get('/:id', verifyToken, getTicketById);
-router.get('/reporter/:reporterId', getTicketsByReporter);
+router.get('/reporter/:reporterId', verifyToken, getTicketsByReporter);
 
 
 

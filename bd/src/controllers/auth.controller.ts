@@ -39,5 +39,7 @@ export const login = async (req: Request, res: Response) => {
         { expiresIn: JWT_EXPIRES_IN }
     );
 
-    res.status(200).json({ token });
+    const { password: _password, ...userWithoutPassword } = user.toObject();
+
+    res.status(200).json({ data: { token, ...userWithoutPassword } });
 };
