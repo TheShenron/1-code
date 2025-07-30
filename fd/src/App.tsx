@@ -1,25 +1,40 @@
 import { Routes } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/app/store';
-import AppInitializer from '@/app/providers/AppInitializer';
 import { filterRoutesByRole } from '@/app/router/filterRoutesByRole';
-import { routesConfig } from './app/router/routesConfig';
+import { routesConfig as postRoute } from './app/router/postRoutesConfig';
+import { routesConfig as preRoute } from '@/app/router/preRoutesConfig'
 import { renderRoutes } from './app/router/renderRoutes';
+import { Role } from './app/types/roles';
+import AppInitializer from './app/providers/AppInitializer';
 
 const App = () => {
-    const role = useSelector((state: RootState) => state.core.userDetails?.role)
+    const isLogined = useSelector((state: RootState) => state.login?.isLogined)
+    const userDetails = useSelector((state: RootState) => state.login?.userDetails)
 
-    if (!role) {
-        return <AppInitializer />
+    if (!isLogined) {
+        const allowedRoutes = filterRoutesByRole(preRoute, Role.GUEST);
+        return (
+            <Routes>
+                {renderRoutes(allowedRoutes)}
+            </Routes>
+        );
+
     }
 
-    const allowedRoutes = filterRoutesByRole(routesConfig, role);
+    if (isLogined && userDetails?.role) {
+        const allowedRoutes = filterRoutesByRole(postRoute, userDetails?.role);
 
-    return (
-        <Routes>
-            {renderRoutes(allowedRoutes)}
-        </Routes>
-    );
+        return (
+            <Routes>
+                {renderRoutes(allowedRoutes)}
+            </Routes>
+        );
+    }
+
+    return <AppInitializer />
+
+
 };
 
 export default App;

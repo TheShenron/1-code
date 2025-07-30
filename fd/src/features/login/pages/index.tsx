@@ -1,18 +1,9 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
+// features/auth/pages/SignUp/index.tsx
+import { useLoginForm } from '../hooks/useLoginForm';
+import { LoginForm } from '../components/LoginForm';
 
-const Login = () => {
-    const navigate = useNavigate()
+export default function SignUpPage() {
+    const form = useLoginForm();
 
-    const handleNavigate = () => {
-        navigate('/dashboard')
-    }
-    return (
-        <div>
-            <h1>Login Page</h1>
-            <button onClick={handleNavigate}>Dashboard</button>
-        </div>
-    )
+    return <LoginForm form={form} onSubmit={form.onSubmit} />;
 }
-
-export default Login
