@@ -1,3 +1,4 @@
+import { store } from '@/app/store';
 import axios from 'axios';
 
 const api = axios.create({
@@ -6,7 +7,8 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(config => {
-    const token = localStorage.getItem('token');
+    const state = store.getState()
+    const token = state.login?.token
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
@@ -21,7 +23,7 @@ api.interceptors.response.use(
 
             if (status === 401) {
                 localStorage.removeItem('token');
-                window.location.href = '/login';
+                // window.location.href = '/login';
             }
 
             if (status === 403) {
