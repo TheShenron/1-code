@@ -57,7 +57,7 @@ export const getTicketsByReporter = async (req: Request, res: Response) => {
         const tickets = await Ticket.find({ reporter: reporterId })
             .populate('reporter', 'name email');
 
-        res.json(tickets);
+        res.json({ data: tickets });
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch tickets', details: err });
     }
