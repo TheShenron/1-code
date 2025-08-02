@@ -1,7 +1,15 @@
 import { Request, Response } from 'express';
 import Ticket, { TicketState } from '../models/Ticket.model';
 
-export const createTicket = async (req: Request, res: Response) => {
+export interface UserPayload {
+    id: string;
+    email: string;
+}
+export interface AuthRequest extends Request {
+    user?: UserPayload;
+}
+
+export const createTicket = async (req: AuthRequest, res: Response) => {
     try {
         const task = new Ticket(req.body);
         await task.save();
@@ -23,12 +31,17 @@ export const updateTicketState = async (req: Request, res: Response) => {
 
     const previousState = task.currentState;
 
+    if (previousState !== 'inprogress' && newState === 'inprogress') {
+        task.inProgressStartedAt = new Date();
+    }
+
     if (previousState === 'inprogress' && newState !== 'inprogress') {
-        const lastUpdated = task.updatedAt || task.createdAt;
+        const lastUpdated = task.inProgressStartedAt || task.updatedAt || task.createdAt;
         const now = new Date();
         const durationMs = now.getTime() - lastUpdated.getTime();
         const timeSpent = parseFloat((durationMs / 60000).toFixed(2));
         task.timeSpentInProgress += timeSpent;
+        task.inProgressStartedAt = null;
     }
 
     task.currentState = newState;
@@ -36,19 +49,47 @@ export const updateTicketState = async (req: Request, res: Response) => {
     res.json({ message: 'Task updated', task });
 };
 
+// export const getTicketById = async (req: Request, res: Response) => {
+//     try {
+//         const task = await Ticket.findById(req.params.id)
+//             .populate('reporter', 'name email');
+//         if (!task) {
+//             res.status(404).json({ error: 'Task not found' });
+//             return
+//         }
+//         res.json(task);
+//     } catch (err) {
+//         res.status(500).json({ error: 'Failed to fetch task', details: err });
+//     }
+// };
+
 export const getTicketById = async (req: Request, res: Response) => {
     try {
         const task = await Ticket.findById(req.params.id)
             .populate('reporter', 'name email');
+
         if (!task) {
             res.status(404).json({ error: 'Task not found' });
             return
         }
-        res.json(task);
+
+        let dynamicTimeSpent = task.timeSpentInProgress;
+
+        if (task.currentState === 'inprogress' && task.inProgressStartedAt) {
+            const now = new Date();
+            const elapsed = (now.getTime() - task.inProgressStartedAt.getTime()) / 60000;
+            dynamicTimeSpent += elapsed;
+        }
+
+        res.json({
+            ...task.toObject(),
+            dynamicTimeSpent: parseFloat(dynamicTimeSpent.toFixed(2)), // total minutes
+        });
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch task', details: err });
     }
 };
+
 
 export const getTicketsByReporter = async (req: Request, res: Response) => {
     try {

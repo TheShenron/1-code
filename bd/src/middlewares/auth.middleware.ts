@@ -3,8 +3,13 @@ import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
 
+export interface UserPayload {
+    id: string;
+    email: string;
+}
+
 export interface AuthRequest extends Request {
-    user?: any; // optionally add more user info
+    user?: UserPayload;
 }
 
 export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction) => {
@@ -18,7 +23,7 @@ export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction)
     const token = authHeader.split(' ')[1];
 
     try {
-        const decoded = jwt.verify(token, JWT_SECRET);
+        const decoded = jwt.verify(token, JWT_SECRET) as UserPayload;
         req.user = decoded;
         next();
     } catch (error) {

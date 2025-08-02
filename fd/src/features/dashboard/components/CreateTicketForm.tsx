@@ -8,7 +8,7 @@ import {
 import { createTicketSchema } from '../services/dashboard.schema';
 import type { z } from 'zod';
 
-type CreateTicketInput = z.infer<typeof createTicketSchema>;
+type CreateTicketInput = z.input<typeof createTicketSchema>;
 
 interface CreateTicketFormProps {
     open: boolean;
@@ -39,9 +39,8 @@ export const CreateTicketForm: React.FC<CreateTicketFormProps> = ({ open, onClos
             <DialogTitle>Create Ticket</DialogTitle>
             <form onSubmit={handleSubmit(handleFormSubmit)} noValidate>
                 <DialogContent dividers>
-                    {/* Same TextField inputs as before */}
                     <TextField
-                        label="Title"
+                        placeholder="Title"
                         fullWidth
                         margin="normal"
                         {...register('title')}
@@ -49,7 +48,7 @@ export const CreateTicketForm: React.FC<CreateTicketFormProps> = ({ open, onClos
                         helperText={errors.title?.message}
                     />
                     <TextField
-                        label="Reporter"
+                        placeholder="Reporter"
                         select
                         fullWidth
                         margin="normal"
@@ -64,7 +63,7 @@ export const CreateTicketForm: React.FC<CreateTicketFormProps> = ({ open, onClos
                         ))}
                     </TextField>
                     <TextField
-                        label="Estimate Time (hours)"
+                        placeholder="Estimate Time (hours)"
                         type="number"
                         fullWidth
                         margin="normal"
@@ -74,7 +73,7 @@ export const CreateTicketForm: React.FC<CreateTicketFormProps> = ({ open, onClos
                         inputProps={{ min: 0 }}
                     />
                     <TextField
-                        label="Time Spent In Progress (hours)"
+                        placeholder="Time Spent In Progress (hours)"
                         type="number"
                         fullWidth
                         margin="normal"
@@ -84,7 +83,7 @@ export const CreateTicketForm: React.FC<CreateTicketFormProps> = ({ open, onClos
                         inputProps={{ min: 0 }}
                     />
                     <TextField
-                        label="Current State"
+                        placeholder="Current State"
                         select
                         fullWidth
                         margin="normal"
@@ -98,8 +97,8 @@ export const CreateTicketForm: React.FC<CreateTicketFormProps> = ({ open, onClos
                         ))}
                     </TextField>
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={onClose}>Cancel</Button>
+                <DialogActions sx={{ p: 2 }}>
+                    <Button variant='outlined' color='error' onClick={onClose}>Cancel</Button>
                     <Button type="submit" variant="contained" color="primary">Create</Button>
                 </DialogActions>
             </form>
