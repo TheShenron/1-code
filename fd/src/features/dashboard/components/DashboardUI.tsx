@@ -12,6 +12,11 @@ import {
     Avatar
 } from '@mui/material';
 import { Columns } from '../types/task.types';
+import { CreateTicketDialogContainer } from './CreateTicketDialogContainer';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/app/store';
+import { TimerDisplay } from './TimerDisplay';
+// import { useLiveTimer } from '../hooks/useLiveTimer';
 
 interface DashboardUIProps {
     columns: Columns;
@@ -26,13 +31,19 @@ const DashboardUI: React.FC<DashboardUIProps> = ({
     onDragEnd,
     draggingFrom
 }) => {
+    const userId = useSelector((state: RootState) => state.login?.userDetails?._id)
+    const userName = useSelector((state: RootState) => state.login?.userDetails?.name)
+
     return (
         <Box p={2}>
-            <Typography variant="h4" mb={2}>Dashboard</Typography>
+            <Stack direction='row' justifyContent='space-between' alignItems='center'>
+                <Typography variant="h4" mb={2}>Dashboard</Typography>
+                {userId && userName && <CreateTicketDialogContainer reporters={[{ _id: userId, name: userName }]} />}
+            </Stack>
             <Stack direction="row" overflow="auto" spacing={2}>
                 <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
                     {Object.entries(columns).map(([columnId, column]) => (
-                        <Box key={columnId} minWidth={260}>
+                        <Box key={columnId} minWidth={260} width={260}>
                             <Typography variant="h6">{column.name}</Typography>
                             <Droppable
                                 droppableId={columnId}
@@ -46,9 +57,11 @@ const DashboardUI: React.FC<DashboardUIProps> = ({
                                         p={2}
                                         borderRadius={2}
                                         minHeight={500}
+                                    // overflow='auto'
                                     >
-                                        {column.items.map((item, index) => (
-                                            <Draggable key={item.id} draggableId={item.id} index={index}>
+                                        {column.items.map((item, index) => {
+
+                                            return <Draggable key={item.id} draggableId={item.id} index={index}>
                                                 {(provided, snapshot) => (
                                                     <Box
                                                         ref={provided.innerRef}
@@ -74,12 +87,13 @@ const DashboardUI: React.FC<DashboardUIProps> = ({
                                                             </Typography>
                                                         </Box>
                                                         <Typography variant="caption" color="text.secondary">
-                                                            Est: {item.estimateTime}h | Spent: {item.timeSpentInProgress}h
+                                                            <TimerDisplay currentState={item.currentState} estimateTime={item.estimateTime} timeSpentInProgress={item.timeSpentInProgress} />
+                                                            {/* Est: {item.estimateTime}m | Spent: {item.timeSpentInProgress}m */}
                                                         </Typography>
                                                     </Box>
                                                 )}
                                             </Draggable>
-                                        ))}
+                                        })}
                                         {provided.placeholder}
                                     </Box>
                                 )}

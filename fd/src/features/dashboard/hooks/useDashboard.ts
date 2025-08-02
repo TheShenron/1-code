@@ -1,12 +1,15 @@
 // Dashboard/useDashboard.ts
 import { useEffect, useState } from 'react';
-import { Columns, Task } from '../types/task.types';
+import { Columns, isValidTicketState, Task } from '../types/task.types';
 import { mapTasksToColumns } from '../utils/apTasksToColumns';
 import { DropResult } from '@hello-pangea/dnd';
+import { useUpdateTicketStateMutation } from '../services/dashboard.query';
 
 export const useDashboard = (tasks: Task[]) => {
     const [columns, setColumns] = useState<Columns>({});
     const [draggingFrom, setDraggingFrom] = useState<string | null>(null);
+    const { mutate } = useUpdateTicketStateMutation()
+
 
     useEffect(() => {
         if (tasks.length) {
@@ -58,6 +61,15 @@ export const useDashboard = (tasks: Task[]) => {
                     items: destItems,
                 },
             });
+
+            if (isValidTicketState(destination.droppableId)) {
+                mutate({
+                    id: removed.id, newState: destination.droppableId,
+                });
+            } else {
+                console.warn('Invalid state:', destination.droppableId);
+            }
+
         }
     };
 

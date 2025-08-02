@@ -17,6 +17,8 @@ export const mapTasksToColumns = (tasks: Task[]): Columns => {
             estimateTime: task.estimateTime,
             timeSpentInProgress: task.timeSpentInProgress,
             reporter: task.reporter,
+            currentState: task.currentState
+
         };
 
         if (columns[task.currentState]) {

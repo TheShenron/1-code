@@ -1,5 +1,6 @@
 // services/dashboard/dashboard.schema.ts
 import { z } from 'zod';
+import { ticketStates } from '../types/task.types';
 
 export const reporterSchema = z.object({
     _id: z.string(),
@@ -13,7 +14,7 @@ export const taskSchema = z.object({
     title: z.string(),
     estimateTime: z.number(),
     timeSpentInProgress: z.number(),
-    currentState: z.enum(['open', 'inprogress', 'inpending', 'blocked', 'qa_review']),
+    currentState: z.enum(ticketStates),
     reporter: reporterSchema,
 });
 
@@ -29,5 +30,5 @@ export const createTicketSchema = z.object({
     reporter: z.string().min(1, "Reporter ID is required"), // ObjectId as string
     estimateTime: z.number().min(0, "Estimate time must be positive"),
     timeSpentInProgress: z.number().min(0).optional().default(0),
-    currentState: z.enum(['open', 'inprogress', 'inpending', 'blocked', 'qa_review']).default('open'),
+    currentState: z.enum(ticketStates).default('open'),
 });

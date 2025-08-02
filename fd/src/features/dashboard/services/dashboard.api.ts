@@ -1,6 +1,8 @@
 // services/dashboard/dashboard.api.ts
 import api from '@/services/api';
-import { getTasksResponseSchema, Task } from './dashboard.schema';
+import { getTasksResponseSchema, Task, createTicketSchema } from './dashboard.schema';
+import type { z } from 'zod';
+import { TicketState } from '../types/task.types';
 
 export const getTasks = async (reporterId: string): Promise<Task[]> => {
     const { data: respData } = await api.get(`/ticket/reporter/${reporterId}`);
@@ -12,4 +14,15 @@ export const getTasks = async (reporterId: string): Promise<Task[]> => {
     }
 
     return result.data.data;
+};
+
+export type CreateTicketInput = z.input<typeof createTicketSchema>;
+
+export const createTicket = async (payload: CreateTicketInput): Promise<void> => {
+    const { data: respData } = await api.post('/ticket', payload);
+    return respData;
+};
+
+export const updateTicketState = async (id: string, newState: TicketState): Promise<void> => {
+    await api.patch(`/ticket/${id}/state`, { newState });
 };

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CreateTicketForm } from './CreateTicketForm';
-import { useCreateTicketMutation } from '@/services/dashboard/dashboard.api'; // your RTK Query or react-query mutation hook
+import { useCreateTicketMutation } from '../services/dashboard.query'; // your RTK Query or react-query mutation hook
+import { Button } from '@mui/material';
 // import { toast } from 'react-toastify'; // optional for user feedback
 
 interface Reporter {
@@ -14,14 +15,14 @@ interface Props {
 
 export const CreateTicketDialogContainer: React.FC<Props> = ({ reporters }) => {
     const [open, setOpen] = useState(false);
-    const [createTicket, { isLoading }] = useCreateTicketMutation();
+    const { mutateAsync } = useCreateTicketMutation();
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
     const handleSubmit = async (data: any) => {
         try {
-            await createTicket(data).unwrap();
+            await mutateAsync(data);
             //   toast.success('Ticket created successfully!');
             handleClose();
         } catch (error) {
@@ -32,13 +33,13 @@ export const CreateTicketDialogContainer: React.FC<Props> = ({ reporters }) => {
 
     return (
         <>
-            <button onClick={handleOpen}>Create Ticket</button>
-            <CreateTicketForm
+            <Button variant='contained' onClick={handleOpen}>Create Ticket</Button>
+            {open && <CreateTicketForm
                 open={open}
                 onClose={handleClose}
                 onSubmit={handleSubmit}
                 reporters={reporters}
-            />
+            />}
         </>
     );
 };
