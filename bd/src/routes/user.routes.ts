@@ -1,13 +1,14 @@
 import { Router } from 'express';
-import { getUsers, createUser } from '../controllers/user.controller';
-import { verifyToken } from '../middlewares/auth.middleware';
+import { createUser } from '../controllers/user.controller';
+import { signupLimiter } from '../middlewares/rateLimiters.middleware';
+import { validateRequest } from '../middlewares/validateRequest.middleware';
+import { signupSchema } from '../schemas/authSchemas';
 
 const router = Router();
 
-// GET /api/users
-// router.get('/', getUsers);
+router.use(signupLimiter)
 
 // POST /api/users
-router.post('/', createUser);
+router.post('/', validateRequest({ body: signupSchema }), createUser);
 
 export default router;

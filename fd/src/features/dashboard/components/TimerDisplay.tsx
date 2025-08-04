@@ -7,6 +7,7 @@ interface TimerDisplayProps {
     estimateTime: number;
     timeSpentInProgress: number;
     currentState: TicketState;
+    inProgressStartedAt: Date
 }
 
 export const TimerDisplay: React.FC<TimerDisplayProps> = React.memo(

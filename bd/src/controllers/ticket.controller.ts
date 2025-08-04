@@ -1,13 +1,6 @@
 import { Request, Response } from 'express';
-import Ticket, { TicketState } from '../models/Ticket.model';
-
-export interface UserPayload {
-    id: string;
-    email: string;
-}
-export interface AuthRequest extends Request {
-    user?: UserPayload;
-}
+import Ticket from '../models/Ticket.model';
+import { AuthRequest, TicketState } from '../types/ticket.type';
 
 export const createTicket = async (req: AuthRequest, res: Response) => {
     try {
@@ -91,15 +84,64 @@ export const getTicketById = async (req: Request, res: Response) => {
 };
 
 
+// export const getTicketsByReporter = async (req: Request, res: Response) => {
+//     try {
+//         const { reporterId } = req.params;
+
+//         const tickets = await Ticket.find({ reporter: reporterId })
+//             .populate('reporter', 'name email');
+
+//         if (!tickets) {
+//             res.status(404).json({ error: 'Task not found' });
+//             return
+//         }
+
+//         let dynamicTimeSpent = tickets;
+
+//         if (tickets.currentState === 'inprogress' && tickets.inProgressStartedAt) {
+//             const now = new Date();
+//             const elapsed = (now.getTime() - tickets.inProgressStartedAt.getTime()) / 60000;
+//             dynamicTimeSpent += elapsed;
+//         }
+
+//         res.json({
+//             ...tickets.toObject(),
+//             dynamicTimeSpent: parseFloat(dynamicTimeSpent.toFixed(2)), // total minutes
+//         });
+
+//         // res.json({ data: tickets });
+//     } catch (err) {
+//         res.status(500).json({ error: 'Failed to fetch tickets', details: err });
+//     }
+// };
+
 export const getTicketsByReporter = async (req: Request, res: Response) => {
     try {
         const { reporterId } = req.params;
 
-        const tickets = await Ticket.find({ reporter: reporterId })
+        const tasks = await Ticket.find({ reporter: reporterId })
             .populate('reporter', 'name email');
 
-        res.json({ data: tickets });
+        // Enhance each task with dynamic time spent
+        const enrichedTasks = tasks.map((task) => {
+            let dynamicTimeSpent = task.timeSpentInProgress;
+
+            if (task.currentState === 'inprogress' && task.inProgressStartedAt) {
+                const now = new Date();
+                const elapsed = (now.getTime() - task.inProgressStartedAt.getTime()) / 60000;
+                dynamicTimeSpent += elapsed;
+            }
+
+            return {
+                ...task.toObject(),
+                dynamicTimeSpent: parseFloat(dynamicTimeSpent.toFixed(2)),
+            };
+        });
+
+        res.json(enrichedTasks);
     } catch (err) {
-        res.status(500).json({ error: 'Failed to fetch tickets', details: err });
+        res.status(500).json({ error: 'Failed to fetch tasks', details: err });
     }
 };
+
+

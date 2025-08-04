@@ -35,6 +35,8 @@ export interface TaskCard {
     timeSpentInProgress: number;
     reporter: Reporter;
     currentState: TicketState;
+    inProgressStartedAt: Date
+
 }
 
 export interface Column {

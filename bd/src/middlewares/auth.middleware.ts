@@ -1,16 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { AuthRequest, UserPayload } from '../types/ticket.type';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
-
-export interface UserPayload {
-    id: string;
-    email: string;
-}
-
-export interface AuthRequest extends Request {
-    user?: UserPayload;
-}
 
 export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
@@ -24,6 +16,12 @@ export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction)
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET) as UserPayload;
+
+        if (!decoded || typeof decoded !== 'object') {
+            res.status(401).json({ message: 'Invalid token payload' });
+            return
+        }
+
         req.user = decoded;
         next();
     } catch (error) {

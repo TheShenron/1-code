@@ -87,7 +87,7 @@ const DashboardUI: React.FC<DashboardUIProps> = ({
                                                             </Typography>
                                                         </Box>
                                                         <Typography variant="caption" color="text.secondary">
-                                                            <TimerDisplay currentState={item.currentState} estimateTime={item.estimateTime} timeSpentInProgress={item.timeSpentInProgress} />
+                                                            <TimerDisplay currentState={item.currentState} estimateTime={item.estimateTime} timeSpentInProgress={item.timeSpentInProgress} inProgressStartedAt={item.inProgressStartedAt} />
                                                             {/* Est: {item.estimateTime}m | Spent: {item.timeSpentInProgress}m */}
                                                         </Typography>
                                                     </Box>

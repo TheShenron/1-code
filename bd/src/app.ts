@@ -1,7 +1,8 @@
-import express, { Application } from 'express';
+import express, { Application, Response, Request } from 'express';
 import cors from 'cors';
 
-import { errorHandler } from './middlewares/error.middleware';
+import { responseWrapper } from './middlewares/responseWrapper.middleware';
+import { errorHandler } from './middlewares/errorHandler.middleware';
 
 // Create express app
 const app: Application = express();
@@ -18,10 +19,8 @@ import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
 import ticketRoutes from './routes/ticket.routes';
 
-
-
 // Health check route
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
     res.status(200).json({ status: 'OK', environment: process.env.NODE_ENV });
 });
 
@@ -31,6 +30,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/ticket', ticketRoutes);
 
 // Global error handler (optional)
-app.use(errorHandler); // Custom error middleware
+app.use(responseWrapper);
+app.use(errorHandler);
 
 export default app;

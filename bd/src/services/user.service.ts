@@ -6,7 +6,11 @@ export const getAllUsers = async (): Promise<IUser[]> => {
     return User.find().select('-password').lean();;
 };
 
-export const createUser = async (userData: CreateUserDTO): Promise<IUser> => {
+export const findUserByEmail = async (email: string) => {
+    return User.findOne({ email });
+};
+
+export const createUsers = async (userData: CreateUserDTO): Promise<IUser> => {
     const user = new User(userData);
     return user.save();
 };

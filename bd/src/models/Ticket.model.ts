@@ -1,25 +1,5 @@
-import mongoose, { Schema, Document, Types } from 'mongoose';
-
-export const ticketStates = [
-    'open',
-    'inprogress',
-    'inpending',
-    'blocked',
-    'qa_review',
-] as const;
-
-export type TicketState = typeof ticketStates[number];
-
-export interface ITicket extends Document {
-    title: string;
-    reporter: Types.ObjectId;
-    estimateTime: number;
-    timeSpentInProgress: number;
-    inProgressStartedAt?: Date | null;
-    currentState: TicketState;
-    createdAt: Date;
-    updatedAt: Date;
-}
+import mongoose, { Schema } from 'mongoose';
+import { ITicket, ticketStates } from '../types/ticket.type';
 
 const TicketSchema = new Schema<ITicket>(
     {
