@@ -6,6 +6,7 @@ import { DropResult } from '@hello-pangea/dnd';
 import { useUpdateTicketStateMutation } from '../services/dashboard.query';
 
 export const useDashboard = (tasks: Task[]) => {
+    console.log(tasks, "TSASD")
     const [columns, setColumns] = useState<Columns>({});
     const [draggingFrom, setDraggingFrom] = useState<string | null>(null);
     const { mutate } = useUpdateTicketStateMutation()

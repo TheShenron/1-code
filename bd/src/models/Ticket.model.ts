@@ -6,16 +6,23 @@ const TicketSchema = new Schema<ITicket>(
         title: { type: String, required: true, unique: true },
         reporter: { type: Schema.Types.ObjectId, ref: 'User', required: true },
         estimateTime: { type: Number, required: true },
-        timeSpentInProgress: { type: Number, default: 0 },
-        inProgressStartedAt: {
-            type: Date,
-            default: null,
-        },
         currentState: {
             type: String,
             enum: ticketStates,
             default: 'open',
         },
+        currentStateStartedAt: {
+            type: Date,
+            default: Date.now,
+        },
+        statusHistory: [
+            {
+                state: { type: String, enum: ticketStates },
+                enteredAt: { type: Date, required: true },
+                exitedAt: { type: Date, default: null },
+                durationInMs: { type: Number, default: 0 }, // optional, helpful for reporting
+            },
+        ],
     },
     { timestamps: true }
 );

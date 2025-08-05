@@ -15,4 +15,14 @@ export const SUCCESS_MESSAGES = {
             message: 'User account successfully created'
         }
     },
+    TICKET: {
+        CREATED: {
+            code: 'TICKET_CREATED',
+            message: 'Ticket created successfully'
+        },
+        FETCHED: {
+            code: 'TICKET_FETCHED',
+            message: 'Ticket retrieved successfully'
+        }
+    },
 };

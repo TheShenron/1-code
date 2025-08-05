@@ -12,8 +12,7 @@ export const getTasks = async (reporterId: string): Promise<Task[]> => {
         console.error('Zod validation failed:', result.error);
         throw new Error('Invalid task data from API');
     }
-
-    return result.data.data;
+    return result.data.data.tickets;
 };
 
 export type CreateTicketInput = z.input<typeof createTicketSchema>;

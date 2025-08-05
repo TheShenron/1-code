@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/app/store';
 
 const Dashboard: React.FC = () => {
-    const Id = useSelector((state: RootState) => state.login?.userDetails?._id)
+    const Id = useSelector((state: RootState) => state.login?.userDetails?.user._id)
 
     if (!Id) {
         return <div>Please log in to see your tasks.</div>;

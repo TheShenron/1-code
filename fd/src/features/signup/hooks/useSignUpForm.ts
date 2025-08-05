@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { Role } from '@/app/types/roles';
 import { createUser } from '../services/login.api';
 import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 const schema = z.object({
     name: z.string().min(1, 'Name is required'),
@@ -16,6 +17,8 @@ const schema = z.object({
 export type SignUpFormValues = z.infer<typeof schema>;
 
 export const useSignUpForm = () => {
+    const navigate = useNavigate()
+
     const methods = useForm<SignUpFormValues>({
         resolver: zodResolver(schema),
         defaultValues: {
@@ -30,6 +33,7 @@ export const useSignUpForm = () => {
         mutationFn: createUser,
         onSuccess: (data) => {
             console.log('User created successfully:', data);
+            navigate('/')
             // maybe redirect or show success toast here
         },
         onError: (error) => {
@@ -38,7 +42,6 @@ export const useSignUpForm = () => {
     });
 
     const onSubmit = methods.handleSubmit((formData) => {
-        console.log(formData)
         createUserMutation.mutate(formData);
     });
 

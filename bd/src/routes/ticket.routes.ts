@@ -1,7 +1,9 @@
 import express, { RequestHandler } from 'express';
-import { createTicket, getTicketById, getTicketsByReporter, updateTicketState } from '../controllers/ticket.controller';
+import { createTicket, getTicketsByReporter } from '../controllers/ticket.controller';
 import { verifyToken } from '../middlewares/auth.middleware';
 import { generalApiLimiter } from '../middlewares/rateLimiters.middleware';
+import { validateRequest } from '../middlewares/validateRequest.middleware';
+import { createTicketSchema } from '../schemas/ticket.schema';
 
 const router = express.Router();
 
@@ -12,10 +14,10 @@ const protectedApiMiddleware: RequestHandler[] = [
 
 router.use(protectedApiMiddleware)
 
-router.post('/', createTicket);
-router.patch('/:id/state', updateTicketState);
-router.get('/:id', getTicketById);
+router.post('/', validateRequest({ body: createTicketSchema }), createTicket);
 router.get('/reporter/:reporterId', getTicketsByReporter);
+router.patch('/:id/state', updateTicketState);
+// router.get('/:id', getTicketById);
 
 
 

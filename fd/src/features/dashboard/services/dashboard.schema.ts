@@ -6,23 +6,35 @@ export const reporterSchema = z.object({
     _id: z.string(),
     name: z.string(),
     email: z.email(),
-    avatar: z.string().optional(),
 });
 
+export const StatusHistoryEntry = z.object({
+    state: z.enum(ticketStates),
+    enteredAt: z.coerce.date(),
+    exitedAt: z.coerce.date().optional(),
+    durationInMs: z.number().nonnegative('TimeSpentInProgres must be a positive number')
+})
+
 export const taskSchema = z.object({
-    _id: z.string(),
-    title: z.string(),
-    estimateTime: z.number(),
-    timeSpentInProgress: z.number(),
-    currentState: z.enum(ticketStates),
-    reporter: reporterSchema,
+    tickets: z.array(z.object({
+        _id: z.string(),
+        title: z.string(),
+        estimateTime: z.number(),
+        currentState: z.enum(ticketStates),
+        reporter: reporterSchema,
+        currentStateStartedAt: z.coerce.date(),
+        statusHistory: z.array(StatusHistoryEntry),
+    }))
 });
 
 export const getTasksResponseSchema = z.object({
-    data: z.array(taskSchema),
+    data: taskSchema,
+    success: z.boolean(),
+    message: z.string()
 });
 
 export type Task = z.infer<typeof taskSchema>;
+export type Ticket = Task['tickets'][number];
 
 
 export const createTicketSchema = z.object({

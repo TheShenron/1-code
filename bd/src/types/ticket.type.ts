@@ -19,13 +19,35 @@ export const ticketStates = [
 
 export type TicketState = typeof ticketStates[number];
 
+export interface StatusHistoryEntry {
+    state: TicketState;
+    enteredAt: Date;
+    exitedAt?: Date | null;
+    durationInMs?: number;
+}
 export interface ITicket extends Document {
     title: string;
     reporter: Types.ObjectId;
     estimateTime: number;
-    timeSpentInProgress: number;
-    inProgressStartedAt?: Date | null;
     currentState: TicketState;
+    currentStateStartedAt: Date,
+    statusHistory: StatusHistoryEntry[];
     createdAt: Date;
     updatedAt: Date;
+}
+
+export interface CreateTicketDTO {
+    title: string;
+    reporter: string;
+    estimateTime: number;
+    currentState: string,
+    timeSpentInProgress: number,
+}
+
+export interface GetTicketsByReporterDTO {
+    reporterId: string;
+}
+
+export interface GetTicketsByIdDTO {
+    id: string;
 }

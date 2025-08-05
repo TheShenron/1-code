@@ -31,8 +31,8 @@ const DashboardUI: React.FC<DashboardUIProps> = ({
     onDragEnd,
     draggingFrom
 }) => {
-    const userId = useSelector((state: RootState) => state.login?.userDetails?._id)
-    const userName = useSelector((state: RootState) => state.login?.userDetails?.name)
+    const userId = useSelector((state: RootState) => state.login?.userDetails?.user._id)
+    const userName = useSelector((state: RootState) => state.login?.userDetails?.user.name)
 
     return (
         <Box p={2}>
