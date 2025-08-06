@@ -12,7 +12,6 @@ export const StatusHistoryEntry = z.object({
     state: z.enum(ticketStates),
     enteredAt: z.coerce.date(),
     exitedAt: z.coerce.date().optional(),
-    durationInMs: z.number().nonnegative('TimeSpentInProgres must be a positive number')
 })
 
 export const taskSchema = z.object({

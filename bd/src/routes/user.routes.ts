@@ -8,7 +8,6 @@ const router = Router();
 
 router.use(signupLimiter)
 
-// POST /api/users
 router.post('/', validateRequest({ body: signupSchema }), createUser);
 
 export default router;

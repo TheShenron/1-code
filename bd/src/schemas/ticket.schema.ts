@@ -8,3 +8,18 @@ export const createTicketSchema = z.object({
     currentState: z.enum(ticketStates),
     timeSpentInProgress: z.number().nonnegative("TimeSpentInProgres must be a positive number"),
 });
+
+export const getTicketByIDSchema = z.object({
+    reporterId: z.string().min(1, 'Reporter id is required')
+});
+
+export const updateTicketStateSchema = z.object({
+    newState: z.enum(ticketStates),
+});
+
+export const updateTicketStateParamSchema = z.object({
+    id: z.string().min(1, 'Reporter id is required')
+});
+
+
+export type UpdateTicketStateInput = z.infer<typeof updateTicketStateSchema>;

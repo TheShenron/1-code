@@ -23,7 +23,6 @@ export interface StatusHistoryEntry {
     state: TicketState;
     enteredAt: Date;
     exitedAt?: Date | null;
-    durationInMs?: number;
 }
 export interface ITicket extends Document {
     title: string;
@@ -50,4 +49,5 @@ export interface GetTicketsByReporterDTO {
 
 export interface GetTicketsByIdDTO {
     id: string;
+    newState: TicketState
 }

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Role } from '../models/User.model';
+import { Role } from '../types/user.type';
 
 export const loginSchema = z.object({
     email: z.string().email({ message: 'Invalid email format' }),

@@ -20,7 +20,6 @@ const TicketSchema = new Schema<ITicket>(
                 state: { type: String, enum: ticketStates },
                 enteredAt: { type: Date, required: true },
                 exitedAt: { type: Date, default: null },
-                durationInMs: { type: Number, default: 0 }, // optional, helpful for reporting
             },
         ],
     },

@@ -1,10 +1,10 @@
 // services/dashboard/dashboard.api.ts
 import api from '@/services/api';
-import { getTasksResponseSchema, Task, createTicketSchema } from './dashboard.schema';
+import { getTasksResponseSchema, Task, createTicketSchema, Ticket } from './dashboard.schema';
 import type { z } from 'zod';
 import { TicketState } from '../types/task.types';
 
-export const getTasks = async (reporterId: string): Promise<Task[]> => {
+export const getTasks = async (reporterId: string): Promise<Ticket[]> => {
     const { data: respData } = await api.get(`/ticket/reporter/${reporterId}`);
 
     const result = getTasksResponseSchema.safeParse(respData);

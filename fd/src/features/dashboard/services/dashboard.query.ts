@@ -1,11 +1,11 @@
 // services/dashboard/dashboard.query.ts
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getTasks, createTicket, CreateTicketInput, updateTicketState } from './dashboard.api';
-import { Task } from './dashboard.schema';
+import { Ticket } from './dashboard.schema';
 import { TicketState } from '../types/task.types';
 
 export const useTasksQuery = (reporterId: string) => {
-    return useQuery<Task[]>({
+    return useQuery<Ticket[]>({
         queryKey: ['dashboard', 'tasks'],
         queryFn: () => getTasks(reporterId),
         enabled: !!reporterId,

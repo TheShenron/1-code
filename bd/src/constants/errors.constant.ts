@@ -34,5 +34,24 @@ export const ERROR_MESSAGES = {
             code: 'FORM_VALIDATION_FAILED',
             message: 'Form validation failed.'
         },
+    },
+    TICKET: {
+        CREATE_FAILED: {
+            code: 'TICKET_CREATE_FAILED',
+            message: 'Failed to create ticket.'
+        },
+        UPDATE_FAILED: {
+            code: 'TICKET_UPDATE_FAILED',
+            message: 'Failed to update ticket.'
+        },
+        NOT_FOUND: {
+            code: 'TICKET_NOT_FOUND',
+            message: 'Ticket not found.'
+        },
+        DELETE_FAILED: {
+            code: 'TICKET_DELETE_FAILED',
+            message: 'Failed to delete ticket.'
+        },
     }
+
 };
