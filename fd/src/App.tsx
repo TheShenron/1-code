@@ -22,8 +22,8 @@ const App = () => {
 
     }
 
-    if (isLogined && userDetails?.role) {
-        const allowedRoutes = filterRoutesByRole(postRoute, userDetails?.role);
+    if (isLogined && userDetails?.user.role) {
+        const allowedRoutes = filterRoutesByRole(postRoute, userDetails?.user.role);
 
         return (
             <Routes>

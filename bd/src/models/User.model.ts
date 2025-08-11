@@ -1,18 +1,7 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
+import { Signup } from '../schemas/authSchemas';
 
-export enum Role {
-  ADMIN = 'ADMIN',
-  USER = 'USER',
-  GUEST = 'GUEST',
-}
-export interface IUser extends Document {
-  name: string;
-  email: string;
-  password: string;
-  role: Role
-}
-
-const userSchema = new Schema<IUser>(
+const userSchema = new Schema<Signup>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -22,5 +11,5 @@ const userSchema = new Schema<IUser>(
   { timestamps: true }
 );
 
-export const User = mongoose.model<IUser>('User', userSchema);
+export const User = mongoose.model<Signup>('User', userSchema);
 

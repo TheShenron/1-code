@@ -1,11 +1,13 @@
 import { Role } from '@/app/types/roles';
-import { z } from 'zod';
+import { boolean, string, z } from 'zod';
 
 const signupResponseSchema = z.object({
-    _id: z.string(),
-    name: z.string(),
-    email: z.email(),
-    role: z.enum(Role),
+    user: z.object({
+        _id: z.string(),
+        name: z.string(),
+        email: z.email(),
+        role: z.enum(Role),
+    })
 });
 
 const signupSchema = z.object({
@@ -17,6 +19,8 @@ const signupSchema = z.object({
 
 export const getSignupResponseSchema = z.object({
     data: signupResponseSchema,
+    success: z.boolean(),
+    message: z.string()
 });
 export type SignUpFormDTO = z.infer<typeof signupSchema>;
 export type UserResponse = z.infer<typeof signupResponseSchema>;

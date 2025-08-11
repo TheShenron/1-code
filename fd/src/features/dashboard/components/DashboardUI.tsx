@@ -1,5 +1,5 @@
 // Dashboard/DashboardUI.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import {
     DragDropContext,
     Droppable,
@@ -11,15 +11,15 @@ import {
     Typography,
     Avatar
 } from '@mui/material';
-import { Columns } from '../types/task.types';
+import { ColumnMap, Ticket } from '../schema/tickect.schema';
 import { CreateTicketDialogContainer } from './CreateTicketDialogContainer';
-import { useSelector } from 'react-redux';
+import { UpdateTicketDialogContainer } from './UpdateTicketDialogContainer';
+import TimeDisplay from './TimerDisplay';
 import { RootState } from '@/app/store';
-import { TimerDisplay } from './TimerDisplay';
-// import { useLiveTimer } from '../hooks/useLiveTimer';
+import { useSelector } from 'react-redux';
 
 interface DashboardUIProps {
-    columns: Columns;
+    columns: ColumnMap;
     draggingFrom: string | null;
     onDragStart: (start: { source: { droppableId: string } }) => void;
     onDragEnd: (result: any) => void;
@@ -31,23 +31,41 @@ const DashboardUI: React.FC<DashboardUIProps> = ({
     onDragEnd,
     draggingFrom
 }) => {
-    const userId = useSelector((state: RootState) => state.login?.userDetails?._id)
-    const userName = useSelector((state: RootState) => state.login?.userDetails?.name)
+    const [open, setOpen] = useState(false);
+    const [initialData, setInitialData] = useState<Ticket | null>(null)
+    const userDetails = useSelector((state: RootState) => state.login?.userDetails?.user)
+
+    const handleOpen = (data: Ticket) => {
+        setInitialData(data)
+        setOpen(true)
+    };
+    const handleClose = () => {
+        setInitialData(null)
+        setOpen(false)
+    };
 
     return (
         <Box p={2}>
             <Stack direction='row' justifyContent='space-between' alignItems='center'>
-                <Typography variant="h4" mb={2}>Dashboard</Typography>
-                {userId && userName && <CreateTicketDialogContainer reporters={[{ _id: userId, name: userName }]} />}
+                <Box mb={5}>
+                    <Typography variant="h4" pb={1}>Hi {userDetails?.name}</Typography>
+                    <Typography>
+                        Time to build something cool. Let’s make it count today! 🚀
+                    </Typography>
+                </Box>
+                <CreateTicketDialogContainer />
             </Stack>
-            <Stack direction="row" overflow="auto" spacing={2}>
+            {Object.keys(columns ?? {}).length > 0 && <Stack direction="row" overflow="auto" spacing={2}>
                 <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
                     {Object.entries(columns).map(([columnId, column]) => (
                         <Box key={columnId} minWidth={260} width={260}>
                             <Typography variant="h6">{column.name}</Typography>
                             <Droppable
                                 droppableId={columnId}
-                                isDropDisabled={columnId === 'open' && draggingFrom !== 'open'}
+                                isDropDisabled={
+                                    (columnId === 'open' && draggingFrom !== 'open') ||
+                                    (columnId === 'inprogress' && columns['inprogress'].tasks.length >= 1 && draggingFrom !== 'inprogress')
+                                }
                             >
                                 {(provided, snapshot) => (
                                     <Box
@@ -57,11 +75,10 @@ const DashboardUI: React.FC<DashboardUIProps> = ({
                                         p={2}
                                         borderRadius={2}
                                         minHeight={500}
-                                    // overflow='auto'
                                     >
-                                        {column.items.map((item, index) => {
+                                        {column.tasks.map((item, index) => {
 
-                                            return <Draggable key={item.id} draggableId={item.id} index={index}>
+                                            return <Draggable key={item._id} draggableId={item._id} index={index}>
                                                 {(provided, snapshot) => (
                                                     <Box
                                                         ref={provided.innerRef}
@@ -73,11 +90,19 @@ const DashboardUI: React.FC<DashboardUIProps> = ({
                                                         p={2}
                                                         mb={1}
                                                         boxShadow={snapshot.isDragging ? 2 : 0}
+                                                        onClick={() => handleOpen(item)}
                                                     >
                                                         <Typography fontWeight="bold">{item.title}</Typography>
-                                                        <Box display="flex" alignItems="center" mt={1}>
+
+                                                        <Box>
+                                                            <Typography variant="body2" py={1}>
+                                                                Time Used: <TimeDisplay history={item.statusHistory} key={item._id} />h / {item.estimateTime}h
+                                                            </Typography>
+                                                        </Box>
+
+                                                        <Box display="flex" alignItems="center">
                                                             <Avatar
-                                                                src={item.reporter?.avatar}
+                                                                // src={item.reporter?.}
                                                                 sx={{ width: 24, height: 24, mr: 1 }}
                                                             >
                                                                 {item.reporter?.name?.[0]}
@@ -86,10 +111,6 @@ const DashboardUI: React.FC<DashboardUIProps> = ({
                                                                 {item.reporter?.name}
                                                             </Typography>
                                                         </Box>
-                                                        <Typography variant="caption" color="text.secondary">
-                                                            <TimerDisplay currentState={item.currentState} estimateTime={item.estimateTime} timeSpentInProgress={item.timeSpentInProgress} />
-                                                            {/* Est: {item.estimateTime}m | Spent: {item.timeSpentInProgress}m */}
-                                                        </Typography>
                                                     </Box>
                                                 )}
                                             </Draggable>
@@ -101,7 +122,9 @@ const DashboardUI: React.FC<DashboardUIProps> = ({
                         </Box>
                     ))}
                 </DragDropContext>
-            </Stack>
+            </Stack>}
+
+            {open && initialData && <UpdateTicketDialogContainer open={open} handleClose={handleClose} initialData={initialData} />}
         </Box>
     );
 };

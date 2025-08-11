@@ -1,23 +1,13 @@
-import React from 'react';
-import { Typography } from '@mui/material';
-import { useLiveTimer } from '../hooks/useLiveTimer';
-import { TicketState } from '../types/task.types';
+import { calculateInProgressTime } from '../utils/apTasksToColumns';
+import { TicketHistory } from '../schema/tickect.schema';
 
-interface TimerDisplayProps {
-    estimateTime: number;
-    timeSpentInProgress: number;
-    currentState: TicketState;
-}
+const TimeDisplay = ({ history }: { history: TicketHistory[] }) => {
+    const { totalInProgressDuration } =
+        calculateInProgressTime(history, new Date());
 
-export const TimerDisplay: React.FC<TimerDisplayProps> = React.memo(
-    ({ estimateTime, timeSpentInProgress, currentState }) => {
-        const isInProgress = currentState === 'inprogress';
-        const liveTime = useLiveTimer(timeSpentInProgress ?? 0, isInProgress);
+    return (
+        <>{totalInProgressDuration.as('hours').toFixed(2)}</>
+    );
+};
 
-        return (
-            <Typography variant="caption" color="text.secondary">
-                Est: {estimateTime}h | Spent: {liveTime}
-            </Typography>
-        );
-    }
-);
+export default TimeDisplay;

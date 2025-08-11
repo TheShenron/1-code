@@ -1,105 +1,66 @@
-import { Request, Response } from 'express';
-import Ticket, { TicketState } from '../models/Ticket.model';
+import { NextFunction, Response } from 'express';
+import { createTickets, deleteTicketById, fineUpdateTicketsByID, getTicketsByReporterId, updateTicketTitleById } from '../services/ticket.service';
+import { SUCCESS_MESSAGES } from '../constants/success.constant'
+import { AuthRequest } from '../schemas/authSchemas';
+import { TicketStatus } from '../schemas/ticket.schema';
+const { CREATED, FETCHED } = SUCCESS_MESSAGES.TICKET
 
-export interface UserPayload {
-    id: string;
-    email: string;
-}
-export interface AuthRequest extends Request {
-    user?: UserPayload;
-}
 
-export const createTicket = async (req: AuthRequest, res: Response) => {
-    try {
-        const task = new Ticket(req.body);
-        await task.save();
-        res.status(201).json(task);
-    } catch (err) {
-        res.status(500).json({ error: 'Failed to create task', details: err });
-    }
+export const createTicket = async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const task = await createTickets(req.body);
+    res.locals.data = { ticekt: task };
+    res.locals.message = CREATED.message;
+    next()
 };
 
-export const updateTicketState = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { newState }: { newState: TicketState } = req.body;
-
-    const task = await Ticket.findById(id);
-    if (!task) {
-        res.status(404).json({ error: 'Task not found' });
-        return
-    }
-
-    const previousState = task.currentState;
-
-    if (previousState !== 'inprogress' && newState === 'inprogress') {
-        task.inProgressStartedAt = new Date();
-    }
-
-    if (previousState === 'inprogress' && newState !== 'inprogress') {
-        const lastUpdated = task.inProgressStartedAt || task.updatedAt || task.createdAt;
-        const now = new Date();
-        const durationMs = now.getTime() - lastUpdated.getTime();
-        const timeSpent = parseFloat((durationMs / 60000).toFixed(2));
-        task.timeSpentInProgress += timeSpent;
-        task.inProgressStartedAt = null;
-    }
-
-    task.currentState = newState;
-    await task.save();
-    res.json({ message: 'Task updated', task });
-};
-
-// export const getTicketById = async (req: Request, res: Response) => {
-//     try {
-//         const task = await Ticket.findById(req.params.id)
-//             .populate('reporter', 'name email');
-//         if (!task) {
-//             res.status(404).json({ error: 'Task not found' });
-//             return
-//         }
-//         res.json(task);
-//     } catch (err) {
-//         res.status(500).json({ error: 'Failed to fetch task', details: err });
-//     }
-// };
-
-export const getTicketById = async (req: Request, res: Response) => {
-    try {
-        const task = await Ticket.findById(req.params.id)
-            .populate('reporter', 'name email');
-
-        if (!task) {
-            res.status(404).json({ error: 'Task not found' });
-            return
-        }
-
-        let dynamicTimeSpent = task.timeSpentInProgress;
-
-        if (task.currentState === 'inprogress' && task.inProgressStartedAt) {
-            const now = new Date();
-            const elapsed = (now.getTime() - task.inProgressStartedAt.getTime()) / 60000;
-            dynamicTimeSpent += elapsed;
-        }
-
-        res.json({
-            ...task.toObject(),
-            dynamicTimeSpent: parseFloat(dynamicTimeSpent.toFixed(2)), // total minutes
-        });
-    } catch (err) {
-        res.status(500).json({ error: 'Failed to fetch task', details: err });
-    }
-};
-
-
-export const getTicketsByReporter = async (req: Request, res: Response) => {
+export const getTicketsByReporter = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const { reporterId } = req.params;
 
-        const tickets = await Ticket.find({ reporter: reporterId })
-            .populate('reporter', 'name email');
+        const tickets = await getTicketsByReporterId({ reporterId })
 
-        res.json({ data: tickets });
-    } catch (err) {
-        res.status(500).json({ error: 'Failed to fetch tickets', details: err });
+        res.locals.data = { tickets: tickets };
+        res.locals.message = FETCHED.message;
+        next()
+    } catch (error) {
+        next(error)
     }
 };
+
+export const updateTicketState = async (req: AuthRequest, res: Response, next: NextFunction) => {
+
+    const { id } = req.params;
+    const { newState }: { newState: TicketStatus } = req.body;
+
+    const ticket = await fineUpdateTicketsByID({ id, newState })
+
+    res.locals.data = { ticket: ticket };
+    res.locals.message = FETCHED.message;
+    next()
+
+};
+
+export const updateTicket = async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const { title }: { title: string } = req.body;
+
+    const ticket = await updateTicketTitleById({ id, title })
+
+    res.locals.data = { ticket: ticket };
+    res.locals.message = FETCHED.message;
+    next()
+
+};
+
+
+export const deleteTicket = async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+
+    const ticket = await deleteTicketById(id);
+
+    res.locals.data = { ticket };
+    res.locals.message = "Ticket deleted successfully";
+    next();
+};
+
+

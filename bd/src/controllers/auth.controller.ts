@@ -1,45 +1,14 @@
-import { Request, Response } from 'express';
-import jwt, { Secret } from 'jsonwebtoken';
-import { User } from '../models/User.model';
-import bcrypt from 'bcrypt';
+import { NextFunction, Request, Response } from 'express';
+import { SUCCESS_MESSAGES } from '../constants/success.constant';
+import { loginUser } from '../services/user.service';
+const { LOGIN_SUCCESS } = SUCCESS_MESSAGES.AUTH
 
-const JWT_SECRET: Secret = process.env.JWT_SECRET as string;
-const JWT_EXPIRES_IN = Number(process.env.JWT_EXPIRES_IN ?? '3600');
 
-export const login = async (req: Request, res: Response) => {
-    const { email, password } = req.body;
+export const login = async (req: Request, res: Response, next: NextFunction) => {
 
-    if (!email || !password) {
-        res.status(400).json({ error: 'Email and password are required' });
-        return
-    }
+    const { token, user } = await loginUser(req.body);
 
-    const user = await User.findOne({ email });
-
-    if (!user) {
-        res.status(401).json({ error: 'Invalid credentials' });
-        return
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
-        res.status(401).json({ error: 'Invalid credentials' });
-        return
-    }
-
-    if (!isPasswordValid) {
-        res.status(401).json({ error: 'Invalid credentials' });
-        return
-    }
-
-    const token = jwt.sign(
-        { id: user._id, email: user.email },
-        JWT_SECRET,
-        { expiresIn: JWT_EXPIRES_IN }
-    );
-
-    const { password: _password, ...userWithoutPassword } = user.toObject();
-
-    res.status(200).json({ data: { token, ...userWithoutPassword } });
+    res.locals.data = { token, user };
+    res.locals.message = LOGIN_SUCCESS.message;
+    next();
 };

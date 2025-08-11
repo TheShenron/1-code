@@ -2,11 +2,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Role } from '@/app/types/roles';
 
 interface UserDetails {
-    _id: string;
-    name: string;
-    email: string;
-    role: Role,
-    token: string
+    token: string,
+    user: {
+        name: string;
+        email: string;
+        _id: string;
+        role: Role,
+    }
 }
 
 interface GlobalState {
@@ -26,8 +28,7 @@ const loginSlice = createSlice({
     initialState,
     reducers: {
         setUserDetails: (state, action: PayloadAction<UserDetails>) => {
-            console.log()
-            state.userDetails = action.payload;
+            state.userDetails = action.payload
             state.token = action.payload.token
             state.isLogined = true
         },
