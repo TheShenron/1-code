@@ -1,15 +1,14 @@
 // Dashboard/useDashboard.ts
 import { useEffect, useState } from 'react';
-import { Columns, isValidTicketState, Task } from '../types/task.types';
 import { mapTasksToColumns } from '../utils/apTasksToColumns';
 import { DropResult } from '@hello-pangea/dnd';
-import { useUpdateTicketStateMutation } from '../services/dashboard.query';
+import { ColumnMap, isValidTicketState, Ticket } from '../schema/tickect.schema';
+import { useUpdateTicketStateMutation } from '../services/query';
 
-export const useDashboard = (tasks: Task[]) => {
-    const [columns, setColumns] = useState<Columns>({});
+export const useDashboard = (tasks: Ticket[]) => {
+    const [columns, setColumns] = useState<ColumnMap | null>(null);
     const [draggingFrom, setDraggingFrom] = useState<string | null>(null);
     const { mutate } = useUpdateTicketStateMutation()
-
 
     useEffect(() => {
         if (tasks.length) {
@@ -22,6 +21,9 @@ export const useDashboard = (tasks: Task[]) => {
     };
 
     const onDragEnd = (result: DropResult) => {
+
+        if (!columns) return
+
         setDraggingFrom(null);
         const { source, destination } = result;
 
@@ -31,7 +33,7 @@ export const useDashboard = (tasks: Task[]) => {
 
         if (source.droppableId === destination.droppableId) {
             const column = columns[source.droppableId];
-            const copiedItems = [...column.items];
+            const copiedItems = [...column.tasks];
             const [removed] = copiedItems.splice(source.index, 1);
             copiedItems.splice(destination.index, 0, removed);
 
@@ -39,14 +41,14 @@ export const useDashboard = (tasks: Task[]) => {
                 ...columns,
                 [source.droppableId]: {
                     ...column,
-                    items: copiedItems,
+                    tasks: copiedItems,
                 },
             });
         } else {
             const sourceColumn = columns[source.droppableId];
             const destColumn = columns[destination.droppableId];
-            const sourceItems = [...sourceColumn.items];
-            const destItems = [...destColumn.items];
+            const sourceItems = [...sourceColumn.tasks];
+            const destItems = [...destColumn.tasks];
             const [removed] = sourceItems.splice(source.index, 1);
             destItems.splice(destination.index, 0, removed);
 
@@ -54,17 +56,17 @@ export const useDashboard = (tasks: Task[]) => {
                 ...columns,
                 [source.droppableId]: {
                     ...sourceColumn,
-                    items: sourceItems,
+                    tasks: sourceItems,
                 },
                 [destination.droppableId]: {
                     ...destColumn,
-                    items: destItems,
+                    tasks: destItems,
                 },
             });
 
             if (isValidTicketState(destination.droppableId)) {
                 mutate({
-                    id: removed.id, newState: destination.droppableId,
+                    id: removed._id, newState: destination.droppableId,
                 });
             } else {
                 console.warn('Invalid state:', destination.droppableId);

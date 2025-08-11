@@ -1,44 +1,54 @@
 import React, { useState } from 'react';
-import { CreateTicketForm } from './CreateTicketForm';
-import { useCreateTicketMutation } from '../services/dashboard.query'; // your RTK Query or react-query mutation hook
-import { Button } from '@mui/material';
-// import { toast } from 'react-toastify'; // optional for user feedback
+import { TicketForm } from './TicketForm';
+import { Button, Stack } from '@mui/material';
+import { useCreateTicketMutation, useTasksMutation } from '../services/query';
+import { RootState } from '@/app/store';
+import { useSelector } from 'react-redux';
+import { CreateTicket } from '../schema/tickect.schema';
+import { downloadTicketsAsCSV } from '../utils/apTasksToColumns';
 
-interface Reporter {
-    _id: string;
-    name: string;
-}
-
-interface Props {
-    reporters: Reporter[];
-}
-
-export const CreateTicketDialogContainer: React.FC<Props> = ({ reporters }) => {
+export const CreateTicketDialogContainer: React.FC = () => {
+    const user = useSelector((state: RootState) => state.login?.userDetails?.user)
     const [open, setOpen] = useState(false);
     const { mutateAsync } = useCreateTicketMutation();
+    const { mutateAsync: getTaskMutation } = useTasksMutation()
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const handleSubmit = async (data: any) => {
+    const handleSubmit = async (data: CreateTicket) => {
         try {
             await mutateAsync(data);
-            //   toast.success('Ticket created successfully!');
             handleClose();
         } catch (error) {
-            //   toast.error('Failed to create ticket.');
             console.error(error);
         }
     };
 
+    const handleExportData = async () => {
+        try {
+            if (!user?._id) return
+            const data = await getTaskMutation(user?._id);
+            const ticket = data.data.tickets
+            downloadTicketsAsCSV(ticket)
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    if (!user) return 'Logined ID Not Found...'
+
     return (
         <>
-            <Button variant='contained' onClick={handleOpen}>Create Ticket</Button>
-            {open && <CreateTicketForm
+            <Stack direction='row' gap={2}>
+                <Button variant='outlined' color='success' onClick={handleExportData}>Export Data</Button>
+                <Button variant='contained' onClick={handleOpen}>Create Ticket</Button>
+            </Stack>
+            {open && <TicketForm
                 open={open}
                 onClose={handleClose}
                 onSubmit={handleSubmit}
-                reporters={reporters}
+                reporter={[user]}
             />}
         </>
     );

@@ -1,4 +1,4 @@
-import { getSignupResponseSchema, SignUpFormDTO, UserResponse } from './login.schema';
+import { getSignupResponseSchema, SignUpFormDTO, UserResponse } from '../schema/signup.schema';
 import api from '@/services/api';
 
 export const createUser = async (payload: SignUpFormDTO): Promise<UserResponse> => {

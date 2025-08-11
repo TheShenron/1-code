@@ -1,17 +1,21 @@
 import TicketModel from "../models/Ticket.model";
-import { CreateTicketDTO, GetTicketsByIdDTO, GetTicketsByReporterDTO, ITicket, } from "../types/ticket.type";
 import { AppError } from "../utils/AppError";
 import { ERROR_MESSAGES } from '../constants/errors.constant'
 import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
-const { CREATE_FAILED, UPDATE_FAILED, NOT_FOUND } = ERROR_MESSAGES.TICKET
+const { CREATE_FAILED, UPDATE_FAILED, NOT_FOUND, DELETE_FAILED } = ERROR_MESSAGES.TICKET
 import dayjs from "dayjs";
+import { createdTicketResp, CreatedTicketResp, CreateTicket, GetTicketById, GetTicketByID, TicketUser, } from "../schemas/ticket.schema";
 
-export const createTickets = async (data: CreateTicketDTO): Promise<ITicket> => {
+export const createTickets = async (data: CreateTicket): Promise<CreatedTicketResp> => {
 
     try {
-        const ticket = new TicketModel(data);
-        return await ticket.save();
+
+        const ticket = await new TicketModel(data).save();
+        const populatedTicket = await ticket.populate<{ reporter: TicketUser }>('reporter', 'name email');
+        const plainTicket = populatedTicket.toObject();
+        return createdTicketResp.parse(plainTicket);
+
     } catch (error: any) {
 
         throw new AppError(
@@ -24,9 +28,37 @@ export const createTickets = async (data: CreateTicketDTO): Promise<ITicket> => 
 
 };
 
+
+export const deleteTicketById = async (id: string): Promise<CreatedTicketResp> => {
+    try {
+        const deletedTicket = await TicketModel
+            .findByIdAndDelete(id)
+            .populate<{ reporter: TicketUser }>('reporter', 'name email');
+
+        if (!deletedTicket) {
+            throw new AppError(
+                DELETE_FAILED.code,
+                'Ticket not found',
+                StatusCodes.NOT_FOUND
+            );
+        }
+
+        const plainTicket = deletedTicket.toObject();
+        return createdTicketResp.parse(plainTicket);
+    } catch (error: any) {
+        throw new AppError(
+            DELETE_FAILED.code,
+            DELETE_FAILED.message,
+            StatusCodes.CONFLICT,
+            error
+        );
+    }
+};
+
+
 export const getTicketsByReporterId = async (
-    data: GetTicketsByReporterDTO
-): Promise<(ITicket)[]> => {
+    data: GetTicketByID
+): Promise<(CreatedTicketResp)[]> => {
     const { reporterId } = data;
     try {
 
@@ -38,10 +70,20 @@ export const getTicketsByReporterId = async (
             );
         }
 
-        return await TicketModel.find({ reporter: reporterId }).populate('reporter', 'name email').lean();
+        const tickets = await TicketModel
+            .find({ reporter: reporterId })
+            .populate('reporter', 'name email')
+            .lean();
+
+        const result = tickets
+            .map(ticket => createdTicketResp.safeParse(ticket))
+            .filter(p => p.success)
+            .map(p => p.data);
+
+        return result;
 
     } catch (error) {
-
+        // console.log(error)
         throw new AppError(
             'GET_TICKETS_FAILED',
             'An unexpected error occurred while fetching tickets.',
@@ -50,16 +92,20 @@ export const getTicketsByReporterId = async (
     }
 };
 
-export const findTicketsByID = async (data: GetTicketsByIdDTO): Promise<ITicket> => {
+export const findTicketsByID = async (data: GetTicketById): Promise<CreatedTicketResp> => {
     const ticket = await TicketModel.findById(data.id);
 
     if (!ticket) {
         throw new Error('Ticket not found');
     }
-    return ticket.save();
+
+    const saved = await ticket.save();
+    await saved.populate('reporter', 'name email');
+    return createdTicketResp.parse(saved.toJSON());
+
 };
 
-export const fineUpdateTicketsByID = async (ticketData: GetTicketsByIdDTO): Promise<ITicket> => {
+export const fineUpdateTicketsByID = async (ticketData: GetTicketById): Promise<CreatedTicketResp> => {
 
     try {
         const { id, newState } = ticketData;
@@ -97,7 +143,9 @@ export const fineUpdateTicketsByID = async (ticketData: GetTicketsByIdDTO): Prom
             enteredAt: now.toDate(),
         });
 
-        return await ticket.save();
+        const saved = await ticket.save();
+        await saved.populate('reporter', 'name email');
+        return createdTicketResp.parse(saved.toJSON());
 
     } catch (error) {
 
@@ -106,6 +154,45 @@ export const fineUpdateTicketsByID = async (ticketData: GetTicketsByIdDTO): Prom
             UPDATE_FAILED.message,
             StatusCodes.BAD_REQUEST,
             error
+        );
+    }
+};
+
+export const updateTicketTitleById = async (
+    data: { id: string, title: string }
+): Promise<CreatedTicketResp | null> => {
+    const { id, title } = data;
+
+    try {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            throw new AppError(
+                'INVALID_TICKET_ID',
+                'Provided ticket ID is not valid.',
+                StatusCodes.BAD_REQUEST
+            );
+        }
+
+        const updatedTicket = await TicketModel.findByIdAndUpdate(
+            id,
+            { title: title },
+            { new: true }
+        )
+            .populate('reporter', 'name email')
+
+        if (!updatedTicket) {
+            throw new AppError(
+                'TICKET_NOT_FOUND',
+                'Ticket not found with the given ID.',
+                StatusCodes.NOT_FOUND
+            );
+        }
+
+        return createdTicketResp.parse(updatedTicket.toJSON());
+    } catch (error) {
+        throw new AppError(
+            'UPDATE_TICKET_FAILED',
+            'An unexpected error occurred while updating the ticket title.',
+            StatusCodes.INTERNAL_SERVER_ERROR
         );
     }
 };

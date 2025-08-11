@@ -1,17 +1,19 @@
 import { User } from '../models/User.model';
-import type { CreateUserDTO } from '../types/user.type'
 import { AppError } from '../utils/AppError';
 import jwt, { Secret } from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { StatusCodes } from 'http-status-codes';
 import { ERROR_MESSAGES } from '../constants/errors.constant';
+import { Login, Signup } from '../schemas/authSchemas';
 const { INVALID_CREDENTIALS } = ERROR_MESSAGES.AUTH
 const JWT_SECRET: Secret = process.env.JWT_SECRET as string;
 const JWT_EXPIRES_IN = Number(process.env.JWT_EXPIRES_IN ?? '3600');
 const { EMAIL_ALREADY_EXISTS } = ERROR_MESSAGES.USER
 
 
-export const loginUser = async (email: string, password: string) => {
+export const loginUser = async (data: Login) => {
+
+    const { email, password } = data
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -45,9 +47,9 @@ export const loginUser = async (email: string, password: string) => {
     };
 };
 
-export const signupUser = async (userData: CreateUserDTO) => {
+export const signupUser = async (data: Signup) => {
 
-    const { name, email, password, role } = userData;
+    const { name, email, password, role } = data;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {

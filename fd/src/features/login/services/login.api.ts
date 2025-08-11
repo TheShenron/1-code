@@ -1,5 +1,5 @@
 import api from '@/services/api';
-import { getLoginResponseSchema, loginDTO, LoginResponse } from './login.schema';
+import { getLoginResponseSchema, loginDTO, LoginResponse } from '../schema/login.schema';
 
 
 export const login = async (payload: loginDTO): Promise<LoginResponse> => {

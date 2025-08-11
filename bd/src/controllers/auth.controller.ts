@@ -5,9 +5,8 @@ const { LOGIN_SUCCESS } = SUCCESS_MESSAGES.AUTH
 
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
-    const { email, password } = req.body;
 
-    const { token, user } = await loginUser(email, password);
+    const { token, user } = await loginUser(req.body);
 
     res.locals.data = { token, user };
     res.locals.message = LOGIN_SUCCESS.message;

@@ -1,7 +1,8 @@
 import { NextFunction, Response } from 'express';
-import { AuthRequest, TicketState } from '../types/ticket.type';
-import { createTickets, fineUpdateTicketsByID, getTicketsByReporterId } from '../services/ticket.service';
+import { createTickets, deleteTicketById, fineUpdateTicketsByID, getTicketsByReporterId, updateTicketTitleById } from '../services/ticket.service';
 import { SUCCESS_MESSAGES } from '../constants/success.constant'
+import { AuthRequest } from '../schemas/authSchemas';
+import { TicketStatus } from '../schemas/ticket.schema';
 const { CREATED, FETCHED } = SUCCESS_MESSAGES.TICKET
 
 
@@ -29,7 +30,7 @@ export const getTicketsByReporter = async (req: AuthRequest, res: Response, next
 export const updateTicketState = async (req: AuthRequest, res: Response, next: NextFunction) => {
 
     const { id } = req.params;
-    const { newState }: { newState: TicketState } = req.body;
+    const { newState }: { newState: TicketStatus } = req.body;
 
     const ticket = await fineUpdateTicketsByID({ id, newState })
 
@@ -37,6 +38,29 @@ export const updateTicketState = async (req: AuthRequest, res: Response, next: N
     res.locals.message = FETCHED.message;
     next()
 
+};
+
+export const updateTicket = async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const { title }: { title: string } = req.body;
+
+    const ticket = await updateTicketTitleById({ id, title })
+
+    res.locals.data = { ticket: ticket };
+    res.locals.message = FETCHED.message;
+    next()
+
+};
+
+
+export const deleteTicket = async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+
+    const ticket = await deleteTicketById(id);
+
+    res.locals.data = { ticket };
+    res.locals.message = "Ticket deleted successfully";
+    next();
 };
 
 

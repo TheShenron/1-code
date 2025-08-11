@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
-import { IUser } from '../types/user.type';
+import { Signup } from '../schemas/authSchemas';
 
-const userSchema = new Schema<IUser>(
+const userSchema = new Schema<Signup>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -11,5 +11,5 @@ const userSchema = new Schema<IUser>(
   { timestamps: true }
 );
 
-export const User = mongoose.model<IUser>('User', userSchema);
+export const User = mongoose.model<Signup>('User', userSchema);
 
