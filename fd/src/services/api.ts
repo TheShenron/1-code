@@ -22,8 +22,8 @@ api.interceptors.response.use(
             const status = error.response.status;
 
             if (status === 401) {
-                // localStorage.clear();
-                // window.location.href = '/login';
+                localStorage.clear();
+                window.location.href = '/';
             }
 
             if (status === 403) {
