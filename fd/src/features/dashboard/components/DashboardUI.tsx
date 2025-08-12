@@ -48,7 +48,7 @@ const DashboardUI: React.FC<DashboardUIProps> = ({
         <Box p={2}>
             <Stack direction='row' justifyContent='space-between' alignItems='center'>
                 <Box mb={5}>
-                    <Typography variant="h4" pb={1}>Hi {userDetails?.name}</Typography>
+                    <Typography variant="h4" pb={1} textTransform='capitalize'>Hi {userDetails?.name}</Typography>
                     <Typography>
                         Time to build something cool. Let’s make it count today! 🚀
                     </Typography>
@@ -102,12 +102,11 @@ const DashboardUI: React.FC<DashboardUIProps> = ({
 
                                                         <Box display="flex" alignItems="center">
                                                             <Avatar
-                                                                // src={item.reporter?.}
-                                                                sx={{ width: 24, height: 24, mr: 1 }}
+                                                                sx={{ width: 25, height: 25, mr: 1, textTransform: 'capitalize' }}
                                                             >
                                                                 {item.reporter?.name?.[0]}
                                                             </Avatar>
-                                                            <Typography variant="body2">
+                                                            <Typography variant="body1" textTransform='capitalize'>
                                                                 {item.reporter?.name}
                                                             </Typography>
                                                         </Box>
