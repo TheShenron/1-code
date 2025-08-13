@@ -1,9 +1,8 @@
-import React from 'react'
 
-const ErrorElement = () => {
-    return (
-        <div>ErrorElement</div>
-    )
-}
+const ErrorElement: React.FC = () => {
+  return (
+    <div>ErrorElement</div>
+  );
+};
 
-export default ErrorElement
+export default ErrorElement;

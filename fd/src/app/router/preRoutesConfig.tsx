@@ -1,31 +1,33 @@
 import LoginPage from '@/features/login/pages';
-import SignupPage from '@/features/signup/pages'
-import Error from '@/features/error/pages'
+import SignupPage from '@/features/signup/pages';
+import Error from '@/features/error/pages';
 import ErrorElement from '@/features/error/pages/ErrorElement';
+import { RouteConfig } from '@/features/signup/types/route.types';
+import { Role } from '../types/roles';
 
-export const routesConfig = [
-    {
-        path: '/',
-        component: <LoginPage />,
-        roles: ['ADMIN', 'USER', "GUEST"],
-        errorElement: <ErrorElement />
-    },
-    {
-        path: '/login',
-        component: <LoginPage />,
-        roles: ['ADMIN', 'USER', "GUEST"],
-        errorElement: <ErrorElement />
-    },
-    {
-        path: '/signup',
-        component: <SignupPage />,
-        roles: ['ADMIN', 'USER', "GUEST"],
-        errorElement: <ErrorElement />
-    },
-    {
-        path: '*',
-        component: <Error />,
-        errorElement: <ErrorElement />,
-        roles: ['ADMIN', 'USER', "GUEST"],
-    },
+export const routesConfig: RouteConfig[] = [
+  {
+    path: '/',
+    component: <LoginPage />,
+    roles: [Role.ADMIN, Role.GUEST, Role.USER],
+    errorElement: <ErrorElement />
+  },
+  {
+    path: '/login',
+    component: <LoginPage />,
+    roles: [Role.ADMIN, Role.GUEST, Role.USER],
+    errorElement: <ErrorElement />
+  },
+  {
+    path: '/signup',
+    component: <SignupPage />,
+    roles: [Role.ADMIN, Role.GUEST, Role.USER],
+    errorElement: <ErrorElement />
+  },
+  {
+    path: '*',
+    component: <Error />,
+    errorElement: <ErrorElement />,
+    roles: [Role.ADMIN, Role.GUEST, Role.USER],
+  },
 ];

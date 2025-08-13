@@ -14,6 +14,7 @@ app.use(express.json()); // Parse JSON request bodies
 //     credentials: true,
 // }));
 app.use(cors())
+app.set('trust proxy', 1);
 
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';

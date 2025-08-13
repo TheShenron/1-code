@@ -2,8 +2,10 @@
 import { useLoginForm } from '../hooks/useLoginForm';
 import { LoginForm } from '../components/LoginForm';
 
-export default function SignUpPage() {
-    const form = useLoginForm();
+const SignUpPage: React.FC = () => {
+  const form = useLoginForm();
 
-    return <LoginForm form={form} onSubmit={form.onSubmit} />;
-}
+  return <LoginForm form={form} onSubmit={form.onSubmit} />;
+};
+
+export default SignUpPage;

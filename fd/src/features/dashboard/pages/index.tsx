@@ -8,42 +8,42 @@ import { useDashboard } from '../hooks/useDashboard';
 import { Typography, Stack } from '@mui/material';
 
 const Dashboard: React.FC = () => {
-    const Id = useSelector((state: RootState) => state.login?.userDetails?.user._id)
+  const Id = useSelector((state: RootState) => state.login?.userDetails?.user._id);
 
-    if (!Id) {
-        return <div>Failed to fetch user_id form store.</div>;
-    }
+  const { data, isLoading, isError } = useTasksQuery(Id);
+  const tickets = data?.data.tickets || [];
+  const { columns, onDragEnd, onDragStart, draggingFrom } = useDashboard(tickets);
 
-    const { data, isLoading, isError } = useTasksQuery(Id);
-    const tickets = data?.data.tickets || []
-    const { columns, onDragEnd, onDragStart, draggingFrom } = useDashboard(tickets);
+  if (!Id) {
+    return <div>Failed to fetch user_id form store.</div>;
+  }
 
-    if (isLoading) return (
-        <Stack mt='40vh' justifyContent='center' alignItems='center'>
-            <Typography variant="h6">
+  if (isLoading) return (
+    <Stack mt='40vh' justifyContent='center' alignItems='center'>
+      <Typography variant="h6">
                 Hold tight! Your tasks are almost here... ⏳🎯
-            </Typography>
-        </Stack>
-    );
-    if (isError) return (
-        <Stack mt='40vh' justifyContent='center' alignItems='center'>
-            <Typography variant="h6" color="error">
+      </Typography>
+    </Stack>
+  );
+  if (isError) return (
+    <Stack mt='40vh' justifyContent='center' alignItems='center'>
+      <Typography variant="h6" color="error">
                 Oops! Tasks went on a coffee break ☕️
-            </Typography>
-            <Typography variant="body1" mt={1}>
+      </Typography>
+      <Typography variant="body1" mt={1}>
                 Try refreshing or check your internet connection.
-            </Typography>
-        </Stack>
-    );
+      </Typography>
+    </Stack>
+  );
 
-    return (
-        <DashboardUI
-            columns={columns!}
-            onDragEnd={onDragEnd}
-            onDragStart={onDragStart}
-            draggingFrom={draggingFrom}
-        />
-    );
+  return (
+    <DashboardUI
+      columns={columns!}
+      onDragEnd={onDragEnd}
+      onDragStart={onDragStart}
+      draggingFrom={draggingFrom}
+    />
+  );
 };
 
 export default Dashboard;
