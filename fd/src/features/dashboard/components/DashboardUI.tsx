@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import {
     DragDropContext,
     Droppable,
-    Draggable
+    Draggable,
+    DropResult
 } from '@hello-pangea/dnd';
 import {
     Box,
@@ -21,8 +22,10 @@ import { useSelector } from 'react-redux';
 interface DashboardUIProps {
     columns: ColumnMap;
     draggingFrom: string | null;
+    /* eslint-disable no-unused-vars */
     onDragStart: (start: { source: { droppableId: string } }) => void;
-    onDragEnd: (result: any) => void;
+    /* eslint-disable no-unused-vars */
+    onDragEnd: (result: DropResult<string>) => void;
 }
 
 const DashboardUI: React.FC<DashboardUIProps> = ({
@@ -32,16 +35,16 @@ const DashboardUI: React.FC<DashboardUIProps> = ({
     draggingFrom
 }) => {
     const [open, setOpen] = useState(false);
-    const [initialData, setInitialData] = useState<Ticket | null>(null)
-    const userDetails = useSelector((state: RootState) => state.login?.userDetails?.user)
+    const [initialData, setInitialData] = useState<Ticket | null>(null);
+    const userDetails = useSelector((state: RootState) => state.login?.userDetails?.user);
 
     const handleOpen = (data: Ticket) => {
-        setInitialData(data)
-        setOpen(true)
+        setInitialData(data);
+        setOpen(true);
     };
-    const handleClose = () => {
-        setInitialData(null)
-        setOpen(false)
+    const handleClose = (): void => {
+        setInitialData(null);
+        setOpen(false);
     };
 
     return (
@@ -112,7 +115,7 @@ const DashboardUI: React.FC<DashboardUIProps> = ({
                                                         </Box>
                                                     </Box>
                                                 )}
-                                            </Draggable>
+                                            </Draggable>;
                                         })}
                                         {provided.placeholder}
                                     </Box>
