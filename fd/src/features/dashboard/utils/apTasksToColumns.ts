@@ -21,6 +21,26 @@ export const mapTasksToColumns = (tasks: Ticket[]): ColumnMap => {
   return columns;
 };
 
+
+function isInProgressEntry(entry: TicketHistory): boolean {
+  return entry.state === 'inprogress';
+}
+
+function calculateEntryDuration(entry: TicketHistory, now: Date): number {
+  const entered = DateTime.fromJSDate(entry.enteredAt).toLocal();
+  const exited = entry.exitedAt
+    ? DateTime.fromJSDate(entry.exitedAt).toLocal()
+    : null;
+
+  if (!entered.isValid) return 0;
+
+  if (!exited || !exited.isValid) {
+    return DateTime.fromJSDate(now).toLocal().diff(entered).toMillis();
+  }
+
+  return exited.diff(entered).toMillis();
+}
+
 export function calculateInProgressTime(
   history: TicketHistory[],
   now: Date = new Date()
@@ -31,64 +51,69 @@ export function calculateInProgressTime(
     };
   }
 
-  let totalMillis = 0;
-
-  for (const entry of history) {
-    if (entry.state === 'inprogress') {
-      const entered = DateTime.fromJSDate(entry.enteredAt).toLocal();
-      const exited = entry.exitedAt
-        ? DateTime.fromJSDate(entry.exitedAt).toLocal()
-        : null;
-
-      if (!entered.isValid) continue;
-
-      if (!exited || !exited.isValid) {
-        // Still in progress, use current time
-        totalMillis += DateTime.fromJSDate(now).toLocal().diff(entered).toMillis();
-      } else {
-        totalMillis += exited.diff(entered).toMillis();
-      }
-    }
-  }
+  const totalMillis = history
+    .filter(isInProgressEntry)
+    .reduce((sum, entry) => sum + calculateEntryDuration(entry, now), 0);
 
   return {
     totalInProgressDuration: Duration.fromMillis(totalMillis),
   };
 }
 
-export function downloadTicketsAsCSV(tickets: Ticket[]): void {
-  if (!tickets.length) return;
 
-  const headers = ['S.No', 'Title', 'Estimation (h)', 'Current Status', 'Reporter Name'];
+function createCSVHeaders(): string[] {
+  return ['S.No', 'Title', 'Estimation (h)', 'Current Status', 'Reporter Name'];
+}
 
-  const skipTitlesSet = new Set([
+function getSkipTitlesSet(): Set<string> {
+  return new Set([
     'Daily Standup / Daily Sync',
-    'Stakeholder, Ad-hoc and Internal Meetings'
+    'Stakeholder, Ad-hoc and Internal Meetings',
   ].map(title => title.toLowerCase()));
+}
 
-  const rows = tickets
-    .filter(ticket => !skipTitlesSet.has(ticket.title.toLowerCase()))
-    .map((ticket, index) => [
-      index + 1,
-      `"${ticket.title}"`,
-      ticket.estimateTime,
-      ticket.currentState,
-      `"${ticket.reporter.name}"`,
-    ]);
+function filterTickets(tickets: Ticket[], skipTitlesSet: Set<string>): Ticket[] {
+  return tickets.filter(ticket => !skipTitlesSet.has(ticket.title.toLowerCase()));
+}
 
-  const csvContent = [
-    headers.join(','),
-    ...rows.map((row) => row.join(',')),
-  ].join('\n');
+function mapTicketsToRows(tickets: Ticket[]): (string | number)[][] {
+  return tickets.map((ticket, index) => [
+    index + 1,
+    `"${ticket.title}"`,
+    ticket.estimateTime,
+    ticket.currentState,
+    `"${ticket.reporter.name}"`,
+  ]);
+}
 
+function createCSVContent(headers: string[], rows: (string | number)[][]): string {
+  return [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+}
+
+function triggerCSVDownload(csvContent: string): void {
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
 
   const link = document.createElement('a');
   link.href = url;
   link.download = `tickets_${new Date().toISOString()}.csv`;
+
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+}
+
+export function downloadTicketsAsCSV(tickets: Ticket[]): void {
+  if (!tickets.length) return;
+
+  if (!tickets.length) return;
+
+  const headers = createCSVHeaders();
+  const skipTitlesSet = getSkipTitlesSet();
+  const filteredTickets = filterTickets(tickets, skipTitlesSet);
+  const rows = mapTicketsToRows(filteredTickets);
+  const csvContent = createCSVContent(headers, rows);
+
+  triggerCSVDownload(csvContent);
 }
 

@@ -5,12 +5,12 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { LoginFormValues } from '../hooks/useLoginForm';
 import { UseFormReturn } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { Login } from '../schema/login.schema';
 
 interface Props {
-  form: UseFormReturn<LoginFormValues>;
+  form: UseFormReturn<Login>;
   onSubmit: () => void;
 }
 

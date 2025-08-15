@@ -21,17 +21,17 @@ const Dashboard: React.FC = () => {
   if (isLoading) return (
     <Stack mt='40vh' justifyContent='center' alignItems='center'>
       <Typography variant="h6">
-                Hold tight! Your tasks are almost here... ⏳🎯
+        Hold tight! Your tasks are almost here... ⏳🎯
       </Typography>
     </Stack>
   );
   if (isError) return (
     <Stack mt='40vh' justifyContent='center' alignItems='center'>
       <Typography variant="h6" color="error">
-                Oops! Tasks went on a coffee break ☕️
+        Oops! Tasks went on a coffee break ☕️
       </Typography>
       <Typography variant="body1" mt={1}>
-                Try refreshing or check your internet connection.
+        Try refreshing or check your internet connection.
       </Typography>
     </Stack>
   );

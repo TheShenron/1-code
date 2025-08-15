@@ -1,11 +1,9 @@
 import React from 'react';
-import { TicketForm } from './TicketForm';
 import { useDeleteTicketMutation, useUpdateTicketMutation } from '../services/query';
 import { RootState } from '@/app/store';
 import { useSelector } from 'react-redux';
 import { Ticket, UpdateTicket } from '../schema/tickect.schema';
-
-
+import TicketForm from './TicketForm';
 
 interface UpdateTicketDialogContainerProps {
   open: boolean,

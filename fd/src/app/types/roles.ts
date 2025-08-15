@@ -1,10 +1,17 @@
-/* eslint-disable no-unused-vars */
+import { ReactNode } from 'react';
+
 export const Role = {
-    ADMIN: 'ADMIN',
-    USER: 'USER',
-    GUEST: 'GUEST',
+  ADMIN: 'ADMIN',
+  USER: 'USER',
+  GUEST: 'GUEST',
 } as const;
 
 export type Role = typeof Role[keyof typeof Role];
 
-/* eslint-enable no-unused-vars */
+export type RouteConfig = {
+  path: string;
+  component: ReactNode;
+  errorElement?: ReactNode;
+  roles: Role[];
+  children?: RouteConfig[];
+};

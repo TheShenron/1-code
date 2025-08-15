@@ -25,16 +25,17 @@ export default tseslint.config([
       'no-eval': 'error', // Disallow eval()
       'no-var': 'error', // Disallow var
       'prefer-const': 'error', // Prefer const over let
-      'no-console': 'warn', // Warn on console statements
-      'no-unused-vars': 'error', // Disallow unused variables
+      'no-console': ['error', { allow: ['warn', 'error', 'info'] }],
+      // 'no-unused-vars': 'error', // Disallow unused variables
+      "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
       'consistent-return': 'error', // Enforce consistent return behavior
       'no-param-reassign': 'error', // Disallow parameter reassignment
-      'no-magic-numbers': ['warn', { ignore: [0, 1] }], // Disallow magic numbers
+      'no-magic-numbers': ['error', { ignore: [0, 1, 2] }], // Disallow magic numbers
       'no-else-return': 'error', // Disallow else after return
       'no-use-before-define': 'error', // Disallow use before define
       complexity: ['warn', { max: 10 }], // Enforce function complexity
       'max-lines': ['warn', 200], // Limit file length
-      'max-statements': ['warn', 20], // Limit statements per function
+      'max-statements': ['warn', 10], // Limit statements per function
 
       // Code Style
       indent: ['error', 2], // Enforce 2-space indentation
@@ -64,7 +65,7 @@ export default tseslint.config([
       '@typescript-eslint/no-explicit-any': 'error', // Warn on usage of any
       '@typescript-eslint/explicit-module-boundary-types': 'error', // Require explicit return types
       '@typescript-eslint/no-inferrable-types': 'error', // Warn on unnecessary type annotations
-      '@typescript-eslint/explicit-function-return-type': 'warn', // Require explicit return types on functions
+      '@typescript-eslint/explicit-function-return-type': 'error', // Require explicit return types on functions
     },
   },
 ]);

@@ -6,14 +6,14 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { SignUpFormValues } from '../hooks/useSignUpForm';
 import { UseFormReturn } from 'react-hook-form';
 import { Role } from '@/app/types/roles';
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
+import { SignupForm } from '../schema/signup.schema';
 
 interface Props {
-  form: UseFormReturn<SignUpFormValues>;
+  form: UseFormReturn<SignupForm>;
   onSubmit: () => void;
 }
 
@@ -32,7 +32,6 @@ export const SignUpForm: React.FC<Props> = ({ form, onSubmit }) => {
       <Typography variant="h5">Sign Up</Typography>
 
       <TextField
-        // label="Name"
         placeholder='Name'
         autoComplete="name"
         {...register('name')}
@@ -41,7 +40,6 @@ export const SignUpForm: React.FC<Props> = ({ form, onSubmit }) => {
       />
 
       <TextField
-        // label="Email"
         placeholder='Email'
         autoComplete="email"
         {...register('email')}
@@ -50,7 +48,6 @@ export const SignUpForm: React.FC<Props> = ({ form, onSubmit }) => {
       />
 
       <TextField
-        // label="Password"
         placeholder='Password'
         type="password"
         autoComplete="off"
@@ -60,7 +57,6 @@ export const SignUpForm: React.FC<Props> = ({ form, onSubmit }) => {
       />
 
       <TextField
-        // label="Role"
         placeholder='Role'
         select
         autoComplete="off"

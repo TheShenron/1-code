@@ -1,25 +1,18 @@
 // features/auth/hooks/useSignUpForm.ts
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { useMutation } from '@tanstack/react-query';
 import { login } from '../services/login.api';
 import { useDispatch } from 'react-redux';
 import { setUserDetails } from '../slice';
+import { Login, loginSchema } from '../schema/login.schema';
 
-const schema = z.object({
-  email: z.email('Invalid email'),
-  password: z.string().min(6, 'Password too short'),
-});
-
-export type LoginFormValues = z.infer<typeof schema>;
-
-export const useLoginForm = (): UseFormReturn<LoginFormValues> & { onSubmit: () => void } => {
+export const useLoginForm = (): UseFormReturn<Login> & { onSubmit: () => void } => {
 
   const dispatch = useDispatch();
 
-  const methods = useForm<LoginFormValues>({
-    resolver: zodResolver(schema),
+  const methods = useForm<Login>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: '',
       password: '',
@@ -29,7 +22,7 @@ export const useLoginForm = (): UseFormReturn<LoginFormValues> & { onSubmit: () 
   const createUserMutation = useMutation({
     mutationFn: login,
     onSuccess: (data) => {
-      console.log('Login successfully:', data);
+      console.info('Login successfully:', data);
       dispatch(setUserDetails(data));
       // maybe redirect or show success toast here
     },

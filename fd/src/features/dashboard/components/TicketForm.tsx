@@ -9,26 +9,23 @@ import {
 import { CreateTicket, UpdateTicket, CreateTicketInput, createTicketSchema, Ticket, Ticketreporter } from '../schema/tickect.schema';
 
 interface BaseProps {
-    open: boolean;
-    onClose: () => void;
-    reporter: Ticketreporter[];
+  open: boolean;
+  onClose: () => void;
+  reporter: Ticketreporter[];
 }
 
 interface CreateProps extends BaseProps {
-    mode: 'create';
-    // eslint-disable-next-line no-unused-vars
-    onSubmit: (data: CreateTicket) => void;
-    initialData?: never;
-    onDelete?: never;
+  mode: 'create';
+  onSubmit: (_data: CreateTicket) => void;
+  initialData?: never;
+  onDelete?: never;
 }
 
 interface UpdateProps extends BaseProps {
-    mode: 'update';
-    // eslint-disable-next-line no-unused-vars
-    onSubmit: (data: UpdateTicket) => void;
-    initialData: Ticket;
-    // eslint-disable-next-line no-unused-vars
-    onDelete: (id: string) => void;
+  mode: 'update';
+  onSubmit: (_data: UpdateTicket) => void;
+  initialData: Ticket;
+  onDelete: (_id: string) => void;
 }
 
 type TicketFormProps = CreateProps | UpdateProps;
@@ -39,7 +36,7 @@ const skipTitlesSet = new Set([
 ].map(title => title.toLowerCase()));
 
 
-export const TicketForm: React.FC<TicketFormProps> = ({ open, onClose, onSubmit, onDelete, initialData, mode = 'create', reporter }) => {
+const TicketForm: React.FC<TicketFormProps> = ({ open, onClose, onSubmit, onDelete, initialData, mode = 'create', reporter }) => {
 
   const { register, handleSubmit, formState: { errors }, reset, watch } = useForm<CreateTicketInput>({
     resolver: zodResolver(createTicketSchema),
@@ -66,11 +63,9 @@ export const TicketForm: React.FC<TicketFormProps> = ({ open, onClose, onSubmit,
         ...parsedData,
         id: initialData!._id,
       };
-      // eslint-disable-next-line no-unused-vars
-      (onSubmit as (data: UpdateTicket) => void)(updateData);
+      (onSubmit as (_data: UpdateTicket) => void)(updateData);
     } else {
-      // eslint-disable-next-line no-unused-vars
-      (onSubmit as (data: CreateTicket) => void)(parsedData);
+      (onSubmit as (_data: CreateTicket) => void)(parsedData);
     }
 
     reset();
@@ -181,3 +176,5 @@ export const TicketForm: React.FC<TicketFormProps> = ({ open, onClose, onSubmit,
     </Dialog>
   );
 };
+
+export default TicketForm;

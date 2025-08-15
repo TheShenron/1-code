@@ -1,5 +1,4 @@
-import { Role } from '@/app/types/roles';
-import { RouteConfig } from '@/features/signup/types/route.types';
+import { Role, RouteConfig } from '@/app/types/roles';
 
 export const filterRoutesByRole = (
   routes: RouteConfig[],
