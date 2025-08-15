@@ -1,10 +1,5 @@
 // features/auth/components/SignUpForm.tsx
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import { UseFormReturn } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Login } from '../schema/login.schema';
@@ -15,7 +10,10 @@ interface Props {
 }
 
 export const LoginForm: React.FC<Props> = ({ form, onSubmit }) => {
-  const { register, formState: { errors } } = form;
+  const {
+    register,
+    formState: { errors },
+  } = form;
   const navigate = useNavigate();
 
   const navSignup = (): void => {
@@ -23,12 +21,22 @@ export const LoginForm: React.FC<Props> = ({ form, onSubmit }) => {
   };
 
   return (
-    <Box component="form" onSubmit={onSubmit} sx={{ gap: 2, display: 'flex', flexDirection: 'column', maxWidth: 500, mx: 'auto', mt: 10 }}>
+    <Box
+      component="form"
+      onSubmit={onSubmit}
+      sx={{
+        gap: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        maxWidth: 500,
+        mx: 'auto',
+        mt: 10,
+      }}
+    >
       <Typography variant="h5">Login Up</Typography>
 
-
       <TextField
-        placeholder='Email'
+        placeholder="Email"
         autoComplete="email"
         {...register('email')}
         error={!!errors.email}
@@ -36,7 +44,7 @@ export const LoginForm: React.FC<Props> = ({ form, onSubmit }) => {
       />
 
       <TextField
-        placeholder='Password'
+        placeholder="Password"
         type="password"
         autoComplete="off"
         {...register('password')}
@@ -44,9 +52,12 @@ export const LoginForm: React.FC<Props> = ({ form, onSubmit }) => {
         helperText={errors.password?.message}
       />
 
-      <Button variant="contained" type="submit">Login</Button>
-      <Button variant="contained" onClick={navSignup}>Signup</Button>
-
+      <Button variant="contained" type="submit">
+        Login
+      </Button>
+      <Button variant="contained" onClick={navSignup}>
+        Signup
+      </Button>
     </Box>
   );
 };

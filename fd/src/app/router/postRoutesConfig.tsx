@@ -20,7 +20,7 @@ export const routesConfig: RouteConfig[] = [
             path: 'settings',
             component: <DashboardPage />,
             roles: [Role.ADMIN],
-            errorElement: <ErrorElement />
+            errorElement: <ErrorElement />,
           },
         ],
       },
@@ -34,7 +34,7 @@ export const routesConfig: RouteConfig[] = [
             path: ':id',
             component: <DashboardPage />,
             roles: [Role.ADMIN],
-            errorElement: <ErrorElement />
+            errorElement: <ErrorElement />,
           },
         ],
       },

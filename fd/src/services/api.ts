@@ -34,21 +34,20 @@ const errorHandler = (error: AxiosError): Promise<AxiosError> => {
     const { status } = response;
 
     switch (status) {
-    case HttpStatusCode.Unauthorized:
-      handleUnauthorized();
-      return Promise.reject(error);
+      case HttpStatusCode.Unauthorized:
+        handleUnauthorized();
+        return Promise.reject(error);
 
-    case HttpStatusCode.Forbidden:
-      handleForbidden();
-      break;
+      case HttpStatusCode.Forbidden:
+        handleForbidden();
+        break;
 
-    default:
-      if (status >= HttpStatusCode.InternalServerError) {
-        handleServerError();
-      }
-      break;
+      default:
+        if (status >= HttpStatusCode.InternalServerError) {
+          handleServerError();
+        }
+        break;
     }
-
   } else if (request) {
     handleNoResponse();
   } else {
@@ -67,9 +66,6 @@ api.interceptors.request.use(config => {
   return config;
 });
 
-api.interceptors.response.use(
-  response => response,
-  errorHandler
-);
+api.interceptors.response.use(response => response, errorHandler);
 
 export default api;

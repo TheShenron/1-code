@@ -6,17 +6,21 @@ import { Ticket, UpdateTicket } from '../schema/tickect.schema';
 import TicketForm from './TicketForm';
 
 interface UpdateTicketDialogContainerProps {
-  open: boolean,
-  handleClose: () => void,
-  initialData: Ticket
+  open: boolean;
+  handleClose: () => void;
+  initialData: Ticket;
 }
 
-export const UpdateTicketDialogContainer: React.FC<UpdateTicketDialogContainerProps> = ({ handleClose, initialData, open }) => {
+export const UpdateTicketDialogContainer: React.FC<UpdateTicketDialogContainerProps> = ({
+  handleClose,
+  initialData,
+  open,
+}) => {
   const user = useSelector((state: RootState) => state.login?.userDetails?.user);
   const { mutateAsync: updateMutateAsync } = useUpdateTicketMutation();
   const { mutateAsync: deleteMutateAsync } = useDeleteTicketMutation();
 
-  const handleSubmit = async(data: UpdateTicket): Promise<void> => {
+  const handleSubmit = async (data: UpdateTicket): Promise<void> => {
     try {
       await updateMutateAsync({ id: data.id, data });
       handleClose();
@@ -25,7 +29,7 @@ export const UpdateTicketDialogContainer: React.FC<UpdateTicketDialogContainerPr
     }
   };
 
-  const handleDelete = async(id: string): Promise<void> => {
+  const handleDelete = async (id: string): Promise<void> => {
     try {
       await deleteMutateAsync({ id });
       handleClose();
@@ -43,7 +47,7 @@ export const UpdateTicketDialogContainer: React.FC<UpdateTicketDialogContainerPr
       onSubmit={handleSubmit}
       onDelete={handleDelete}
       reporter={[user]}
-      mode='update'
+      mode="update"
       initialData={initialData}
     />
   );

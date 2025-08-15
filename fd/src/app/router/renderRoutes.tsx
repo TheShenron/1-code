@@ -3,8 +3,7 @@ import { JSX } from 'react';
 import { RouteConfig } from '../types/roles';
 
 export const renderRoutes = (routes: RouteConfig[]): JSX.Element[] => {
-  return routes.map((route) => {
-
+  return routes.map(route => {
     return (
       <Route
         key={route.path}

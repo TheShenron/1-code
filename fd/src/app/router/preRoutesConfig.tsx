@@ -9,19 +9,19 @@ export const routesConfig: RouteConfig[] = [
     path: '/',
     component: <LoginPage />,
     roles: [Role.ADMIN, Role.GUEST, Role.USER],
-    errorElement: <ErrorElement />
+    errorElement: <ErrorElement />,
   },
   {
     path: '/login',
     component: <LoginPage />,
     roles: [Role.ADMIN, Role.GUEST, Role.USER],
-    errorElement: <ErrorElement />
+    errorElement: <ErrorElement />,
   },
   {
     path: '/signup',
     component: <SignupPage />,
     roles: [Role.ADMIN, Role.GUEST, Role.USER],
-    errorElement: <ErrorElement />
+    errorElement: <ErrorElement />,
   },
   {
     path: '*',

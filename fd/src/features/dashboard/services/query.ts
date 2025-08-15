@@ -1,7 +1,19 @@
 // services/dashboard/dashboard.query.ts
-import { useQuery, useMutation, useQueryClient, UseQueryResult, UseMutationResult } from '@tanstack/react-query';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  UseQueryResult,
+  UseMutationResult,
+} from '@tanstack/react-query';
 import { createTicket, deleteTicket, getTickets, updateTicket, updateTicketStatus } from './api';
-import { CreateTasksResponse, CreateTicket, GetTasksResponse, TicketStatus, UpdateTicket } from '../schema/tickect.schema';
+import {
+  CreateTasksResponse,
+  CreateTicket,
+  GetTasksResponse,
+  TicketStatus,
+  UpdateTicket,
+} from '../schema/tickect.schema';
 
 const MILLISECOND = 1000;
 const SECONDS_IN_MINUTE = 60;
@@ -24,7 +36,11 @@ export const useTasksMutation = (): UseMutationResult<GetTasksResponse, Error, s
   });
 };
 
-export const useCreateTicketMutation = (): UseMutationResult<CreateTasksResponse, Error, CreateTicket> => {
+export const useCreateTicketMutation = (): UseMutationResult<
+  CreateTasksResponse,
+  Error,
+  CreateTicket
+> => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -35,18 +51,26 @@ export const useCreateTicketMutation = (): UseMutationResult<CreateTasksResponse
   });
 };
 
-export const useUpdateTicketMutation = (): UseMutationResult<CreateTasksResponse, Error, { id: string, data: UpdateTicket }> => {
+export const useUpdateTicketMutation = (): UseMutationResult<
+  CreateTasksResponse,
+  Error,
+  { id: string; data: UpdateTicket }
+> => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string, data: UpdateTicket }) => updateTicket(id, data),
+    mutationFn: ({ id, data }: { id: string; data: UpdateTicket }) => updateTicket(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['dashboard', 'tasks'] });
     },
   });
 };
 
-export const useDeleteTicketMutation = (): UseMutationResult<CreateTasksResponse, Error, { id: string }> => {
+export const useDeleteTicketMutation = (): UseMutationResult<
+  CreateTasksResponse,
+  Error,
+  { id: string }
+> => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -57,7 +81,11 @@ export const useDeleteTicketMutation = (): UseMutationResult<CreateTasksResponse
   });
 };
 
-export const useUpdateTicketStateMutation = (): UseMutationResult<CreateTasksResponse, Error, { id: string; newState: TicketStatus }> => {
+export const useUpdateTicketStateMutation = (): UseMutationResult<
+  CreateTasksResponse,
+  Error,
+  { id: string; newState: TicketStatus }
+> => {
   const queryClient = useQueryClient();
 
   return useMutation({

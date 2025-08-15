@@ -16,7 +16,7 @@ export const CreateTicketDialogContainer: React.FC = () => {
   const handleOpen = (): void => setOpen(true);
   const handleClose = (): void => setOpen(false);
 
-  const handleSubmit = async(data: CreateTicket): Promise<void> => {
+  const handleSubmit = async (data: CreateTicket): Promise<void> => {
     try {
       await mutateAsync(data);
       handleClose();
@@ -25,7 +25,7 @@ export const CreateTicketDialogContainer: React.FC = () => {
     }
   };
 
-  const handleExportData = async(): Promise<void> => {
+  const handleExportData = async (): Promise<void> => {
     try {
       if (!user?._id) return;
       const data = await getTaskMutation(user?._id);
@@ -40,17 +40,23 @@ export const CreateTicketDialogContainer: React.FC = () => {
 
   return (
     <>
-      <Stack direction='row' gap={2}>
-        <Button variant='outlined' color='success' onClick={handleExportData}>Export Data</Button>
-        <Button variant='contained' onClick={handleOpen}>Create Ticket</Button>
+      <Stack direction="row" gap={2}>
+        <Button variant="outlined" color="success" onClick={handleExportData}>
+          Export Data
+        </Button>
+        <Button variant="contained" onClick={handleOpen}>
+          Create Ticket
+        </Button>
       </Stack>
-      {open && <TicketForm
-        open={open}
-        onClose={handleClose}
-        onSubmit={handleSubmit}
-        reporter={[user]}
-        mode="create"
-      />}
+      {open && (
+        <TicketForm
+          open={open}
+          onClose={handleClose}
+          onSubmit={handleSubmit}
+          reporter={[user]}
+          mode="create"
+        />
+      )}
     </>
   );
 };

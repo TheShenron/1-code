@@ -10,10 +10,10 @@ const loginResponseSchema = z.object({
     _id: z.string(),
     name: z.string(),
     email: z.email(),
-    role: z.enum(Role).refine((val) => !!val, { message: 'Role is required' }),
-  })
+    role: z.enum(Role).refine(val => !!val, { message: 'Role is required' }),
+  }),
 });
-export type LoginResponse = z.infer<typeof loginResponseSchema>
+export type LoginResponse = z.infer<typeof loginResponseSchema>;
 
 export const loginSchema = z.object({
   email: z.email(),
@@ -26,4 +26,3 @@ export const getLoginResponseSchema = z.object({
   message: z.string(),
   success: z.boolean(),
 });
-

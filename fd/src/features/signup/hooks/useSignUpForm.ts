@@ -7,7 +7,9 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { SignupForm, signupFormSchema } from '../schema/signup.schema';
 
-export const useSignUpForm = (): UseFormReturn<SignupForm> & { onSubmit: () => void } => {
+export const useSignUpForm = (): UseFormReturn<SignupForm> & {
+  onSubmit: () => void;
+} => {
   const navigate = useNavigate();
 
   const methods = useForm<SignupForm>({
@@ -22,17 +24,17 @@ export const useSignUpForm = (): UseFormReturn<SignupForm> & { onSubmit: () => v
 
   const createUserMutation = useMutation({
     mutationFn: createUser,
-    onSuccess: (data) => {
+    onSuccess: data => {
       console.info('User created successfully:', data);
       navigate('/');
       // maybe redirect or show success toast here
     },
-    onError: (error) => {
+    onError: error => {
       console.error('User creation failed:', error);
     },
   });
 
-  const onSubmit = methods.handleSubmit((formData) => {
+  const onSubmit = methods.handleSubmit(formData => {
     createUserMutation.mutate(formData);
   });
 

@@ -7,8 +7,9 @@ import { useDispatch } from 'react-redux';
 import { setUserDetails } from '../slice';
 import { Login, loginSchema } from '../schema/login.schema';
 
-export const useLoginForm = (): UseFormReturn<Login> & { onSubmit: () => void } => {
-
+export const useLoginForm = (): UseFormReturn<Login> & {
+  onSubmit: () => void;
+} => {
   const dispatch = useDispatch();
 
   const methods = useForm<Login>({
@@ -21,17 +22,17 @@ export const useLoginForm = (): UseFormReturn<Login> & { onSubmit: () => void } 
 
   const createUserMutation = useMutation({
     mutationFn: login,
-    onSuccess: (data) => {
+    onSuccess: data => {
       console.info('Login successfully:', data);
       dispatch(setUserDetails(data));
       // maybe redirect or show success toast here
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Login failed:', error);
     },
   });
 
-  const onSubmit = methods.handleSubmit((formData) => {
+  const onSubmit = methods.handleSubmit(formData => {
     createUserMutation.mutate(formData);
   });
 

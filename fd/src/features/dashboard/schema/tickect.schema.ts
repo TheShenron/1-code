@@ -10,13 +10,7 @@ const TIME_SPENT_MIN = 0;
 const TIME_SPENT_MAX = 56;
 
 // Ticket status literals
-export const ticketStatuses = [
-  'open',
-  'inprogress',
-  'inpending',
-  'blocked',
-  'qa_review',
-] as const;
+export const ticketStatuses = ['open', 'inprogress', 'inpending', 'blocked', 'qa_review'] as const;
 
 export const ticketStatusSchema = z.enum(ticketStatuses);
 export type TicketStatus = z.infer<typeof ticketStatusSchema>;
@@ -70,7 +64,6 @@ export const createTasksResponseSchema = z.object({
 });
 export type GetTasksResponse = z.infer<typeof getTasksResponseSchema>;
 export type CreateTasksResponse = z.infer<typeof createTasksResponseSchema>;
-
 
 export const columnSchema = z.object({
   name: z.string(),

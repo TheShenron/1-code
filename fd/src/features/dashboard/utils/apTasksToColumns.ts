@@ -11,8 +11,7 @@ export const mapTasksToColumns = (tasks: Ticket[]): ColumnMap => {
     qa_review: { name: 'QA Review', tasks: [] },
   };
 
-  tasks.forEach((task) => {
-
+  tasks.forEach(task => {
     if (columns[task.currentState]) {
       columns[task.currentState].tasks.push(task);
     }
@@ -21,16 +20,13 @@ export const mapTasksToColumns = (tasks: Ticket[]): ColumnMap => {
   return columns;
 };
 
-
 function isInProgressEntry(entry: TicketHistory): boolean {
   return entry.state === 'inprogress';
 }
 
 function calculateEntryDuration(entry: TicketHistory, now: Date): number {
   const entered = DateTime.fromJSDate(entry.enteredAt).toLocal();
-  const exited = entry.exitedAt
-    ? DateTime.fromJSDate(entry.exitedAt).toLocal()
-    : null;
+  const exited = entry.exitedAt ? DateTime.fromJSDate(entry.exitedAt).toLocal() : null;
 
   if (!entered.isValid) return 0;
 
@@ -60,16 +56,16 @@ export function calculateInProgressTime(
   };
 }
 
-
 function createCSVHeaders(): string[] {
   return ['S.No', 'Title', 'Estimation (h)', 'Current Status', 'Reporter Name'];
 }
 
 function getSkipTitlesSet(): Set<string> {
-  return new Set([
-    'Daily Standup / Daily Sync',
-    'Stakeholder, Ad-hoc and Internal Meetings',
-  ].map(title => title.toLowerCase()));
+  return new Set(
+    ['Daily Standup / Daily Sync', 'Stakeholder, Ad-hoc and Internal Meetings'].map(title =>
+      title.toLowerCase()
+    )
+  );
 }
 
 function filterTickets(tickets: Ticket[], skipTitlesSet: Set<string>): Ticket[] {
@@ -116,4 +112,3 @@ export function downloadTicketsAsCSV(tickets: Ticket[]): void {
 
   triggerCSVDownload(csvContent);
 }
-

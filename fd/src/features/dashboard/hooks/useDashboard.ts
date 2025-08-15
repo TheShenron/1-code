@@ -39,7 +39,6 @@ export const useDashboard = (tasks: Ticket[]): UseDashboardReturnType => {
     source: DropResult['source'],
     destination: DropResult['destination']
   ): ColumnMap => {
-
     if (!isValidTicketState(source.droppableId)) throw new Error('Invalid source ID');
     if (!isValidTicketState(destination?.droppableId)) throw new Error('Invalid destination ID');
 
@@ -62,7 +61,6 @@ export const useDashboard = (tasks: Ticket[]): UseDashboardReturnType => {
     source: DropResult['source'],
     destination: DropResult['destination']
   ): { updatedColumns: ColumnMap; movedTask: Ticket } => {
-
     if (!isValidTicketState(source.droppableId) || !isValidTicketState(destination?.droppableId)) {
       throw new Error('Invalid droppableId');
     }
@@ -91,13 +89,10 @@ export const useDashboard = (tasks: Ticket[]): UseDashboardReturnType => {
   const shouldIgnoreDrop = (sourceId: string, destinationId: string): boolean =>
     destinationId === 'open' && sourceId !== 'open';
 
-
   const onDragEnd = (result: DropResult): void => {
-
     if (!columns) return;
 
     if (!result.destination) return;
-
 
     const { source, destination } = result;
 
@@ -111,7 +106,8 @@ export const useDashboard = (tasks: Ticket[]): UseDashboardReturnType => {
       const updated = reorderWithinColumn(columns, source, destination);
       setColumns(updated);
     } else {
-      if (!isValidTicketState(source.droppableId) || !isValidTicketState(destination.droppableId)) return;
+      if (!isValidTicketState(source.droppableId) || !isValidTicketState(destination.droppableId))
+        return;
 
       const { updatedColumns, movedTask } = moveBetweenColumns(columns, source, destination);
       setColumns(updatedColumns);
@@ -126,7 +122,6 @@ export const useDashboard = (tasks: Ticket[]): UseDashboardReturnType => {
       }
     }
   };
-
 
   return { columns, onDragEnd, onDragStart, draggingFrom };
 };

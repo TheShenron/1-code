@@ -6,7 +6,7 @@ export const Role = {
   GUEST: 'GUEST',
 } as const;
 
-export type Role = typeof Role[keyof typeof Role];
+export type Role = (typeof Role)[keyof typeof Role];
 
 export type RouteConfig = {
   path: string;

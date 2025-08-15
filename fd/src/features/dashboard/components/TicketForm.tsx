@@ -2,11 +2,23 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  Dialog, DialogTitle, DialogContent, DialogActions,
-  Button, TextField, MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+  MenuItem,
   InputAdornment,
 } from '@mui/material';
-import { CreateTicket, UpdateTicket, CreateTicketInput, createTicketSchema, Ticket, Ticketreporter } from '../schema/tickect.schema';
+import {
+  CreateTicket,
+  UpdateTicket,
+  CreateTicketInput,
+  createTicketSchema,
+  Ticket,
+  Ticketreporter,
+} from '../schema/tickect.schema';
 
 interface BaseProps {
   open: boolean;
@@ -30,15 +42,28 @@ interface UpdateProps extends BaseProps {
 
 type TicketFormProps = CreateProps | UpdateProps;
 
-const skipTitlesSet = new Set([
-  'Daily Standup / Daily Sync',
-  'Stakeholder, Ad-hoc and Internal Meetings'
-].map(title => title.toLowerCase()));
+const skipTitlesSet = new Set(
+  ['Daily Standup / Daily Sync', 'Stakeholder, Ad-hoc and Internal Meetings'].map(title =>
+    title.toLowerCase()
+  )
+);
 
-
-const TicketForm: React.FC<TicketFormProps> = ({ open, onClose, onSubmit, onDelete, initialData, mode = 'create', reporter }) => {
-
-  const { register, handleSubmit, formState: { errors }, reset, watch } = useForm<CreateTicketInput>({
+const TicketForm: React.FC<TicketFormProps> = ({
+  open,
+  onClose,
+  onSubmit,
+  onDelete,
+  initialData,
+  mode = 'create',
+  reporter,
+}) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    watch,
+  } = useForm<CreateTicketInput>({
     resolver: zodResolver(createTicketSchema),
     defaultValues: {
       title: '',
@@ -54,8 +79,7 @@ const TicketForm: React.FC<TicketFormProps> = ({ open, onClose, onSubmit, onDele
   const currentTitle = watch('title') || '';
   const shouldHideDeleteButton = skipTitlesSet.has(currentTitle.toLowerCase());
 
-  const handleFormSubmit = async(data: CreateTicketInput): Promise<void> => {
-
+  const handleFormSubmit = async (data: CreateTicketInput): Promise<void> => {
     const parsedData = createTicketSchema.parse(data);
 
     if (mode === 'update') {
@@ -70,7 +94,6 @@ const TicketForm: React.FC<TicketFormProps> = ({ open, onClose, onSubmit, onDele
 
     reset();
   };
-
 
   const handleTicketDelete = (): void => {
     onDelete?.(initialData?._id ?? '');
@@ -114,9 +137,13 @@ const TicketForm: React.FC<TicketFormProps> = ({ open, onClose, onSubmit, onDele
             value={selectedReporter || ''}
             disabled={mode === 'update'}
           >
-            <MenuItem value=""><em>Select reporter</em></MenuItem>
+            <MenuItem value="">
+              <em>Select reporter</em>
+            </MenuItem>
             {reporter.map(rep => (
-              <MenuItem key={rep._id} value={rep._id}>{rep.name}</MenuItem>
+              <MenuItem key={rep._id} value={rep._id}>
+                {rep.name}
+              </MenuItem>
             ))}
           </TextField>
           <TextField
@@ -161,13 +188,26 @@ const TicketForm: React.FC<TicketFormProps> = ({ open, onClose, onSubmit, onDele
             disabled={mode === 'update'}
           >
             {['open', 'inprogress', 'inpending', 'blocked', 'qa_review'].map(state => (
-              <MenuItem key={state} value={state}>{state}</MenuItem>
+              <MenuItem key={state} value={state}>
+                {state}
+              </MenuItem>
             ))}
           </TextField>
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
-          {mode === 'update' && !shouldHideDeleteButton && <Button variant='contained' color='error' sx={{ mr: 'auto' }} onClick={handleTicketDelete}>Delete</Button>}
-          <Button variant='outlined' color='error' onClick={onClose}>Cancel</Button>
+          {mode === 'update' && !shouldHideDeleteButton && (
+            <Button
+              variant="contained"
+              color="error"
+              sx={{ mr: 'auto' }}
+              onClick={handleTicketDelete}
+            >
+              Delete
+            </Button>
+          )}
+          <Button variant="outlined" color="error" onClick={onClose}>
+            Cancel
+          </Button>
           <Button type="submit" variant="contained" color="primary">
             {mode === 'update' ? 'Update' : 'Create'}
           </Button>
