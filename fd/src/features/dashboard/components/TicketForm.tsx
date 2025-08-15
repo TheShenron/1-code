@@ -25,21 +25,18 @@ interface BaseProps {
   onClose: () => void;
   reporter: Ticketreporter[];
 }
-
 interface CreateProps extends BaseProps {
   mode: 'create';
   onSubmit: (_data: CreateTicket) => void;
   initialData?: never;
   onDelete?: never;
 }
-
 interface UpdateProps extends BaseProps {
   mode: 'update';
   onSubmit: (_data: UpdateTicket) => void;
   initialData: Ticket;
   onDelete: (_id: string) => void;
 }
-
 type TicketFormProps = CreateProps | UpdateProps;
 
 const skipTitlesSet = new Set(
