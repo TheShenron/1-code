@@ -1,26 +1,23 @@
 // features/auth/components/SignUpForm.tsx
-import {
-  Box,
-  Button,
-  MenuItem,
-  TextField,
-  Typography,
-} from '@mui/material';
-import { SignUpFormValues } from '../hooks/useSignUpForm';
+import { Box, Button, MenuItem, TextField, Typography } from '@mui/material';
 import { UseFormReturn } from 'react-hook-form';
 import { Role } from '@/app/types/roles';
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
+import { SignupForm } from '../schema/signup.schema';
 
 interface Props {
-  form: UseFormReturn<SignUpFormValues>;
+  form: UseFormReturn<SignupForm>;
   onSubmit: () => void;
 }
 
 const roleOptions = ['GUEST'];
 
 export const SignUpForm: React.FC<Props> = ({ form, onSubmit }) => {
-  const { register, formState: { errors } } = form;
+  const {
+    register,
+    formState: { errors },
+  } = form;
 
   const navigate = useNavigate();
 
@@ -28,12 +25,22 @@ export const SignUpForm: React.FC<Props> = ({ form, onSubmit }) => {
     navigate('/');
   };
   return (
-    <Box component="form" onSubmit={onSubmit} sx={{ gap: 2, display: 'flex', flexDirection: 'column', maxWidth: 500, mx: 'auto', mt: 10 }}>
+    <Box
+      component="form"
+      onSubmit={onSubmit}
+      sx={{
+        gap: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        maxWidth: 500,
+        mx: 'auto',
+        mt: 10,
+      }}
+    >
       <Typography variant="h5">Sign Up</Typography>
 
       <TextField
-        // label="Name"
-        placeholder='Name'
+        placeholder="Name"
         autoComplete="name"
         {...register('name')}
         error={!!errors.name}
@@ -41,8 +48,7 @@ export const SignUpForm: React.FC<Props> = ({ form, onSubmit }) => {
       />
 
       <TextField
-        // label="Email"
-        placeholder='Email'
+        placeholder="Email"
         autoComplete="email"
         {...register('email')}
         error={!!errors.email}
@@ -50,8 +56,7 @@ export const SignUpForm: React.FC<Props> = ({ form, onSubmit }) => {
       />
 
       <TextField
-        // label="Password"
-        placeholder='Password'
+        placeholder="Password"
         type="password"
         autoComplete="off"
         {...register('password')}
@@ -60,8 +65,7 @@ export const SignUpForm: React.FC<Props> = ({ form, onSubmit }) => {
       />
 
       <TextField
-        // label="Role"
-        placeholder='Role'
+        placeholder="Role"
         select
         autoComplete="off"
         defaultValue={Role.GUEST}
@@ -69,16 +73,19 @@ export const SignUpForm: React.FC<Props> = ({ form, onSubmit }) => {
         error={!!errors.role}
         helperText={errors.role?.message}
       >
-        {roleOptions.map((role) => (
+        {roleOptions.map(role => (
           <MenuItem key={role} value={role}>
             {role}
           </MenuItem>
         ))}
       </TextField>
 
-      <Button variant="contained" type="submit">Submit</Button>
-      <Button variant="contained" onClick={navSignup}>Login</Button>
-
+      <Button variant="contained" type="submit">
+        Submit
+      </Button>
+      <Button variant="contained" onClick={navSignup}>
+        Login
+      </Button>
     </Box>
   );
 };

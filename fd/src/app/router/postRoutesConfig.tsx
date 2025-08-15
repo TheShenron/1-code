@@ -1,8 +1,7 @@
 import DashboardPage from '@/features/dashboard/pages';
 import Error from '@/features/error/pages';
 import ErrorElement from '@/features/error/pages/ErrorElement';
-import { RouteConfig } from '@/features/signup/types/route.types';
-import { Role } from '../types/roles';
+import { Role, RouteConfig } from '../types/roles';
 
 export const routesConfig: RouteConfig[] = [
   {
@@ -21,7 +20,7 @@ export const routesConfig: RouteConfig[] = [
             path: 'settings',
             component: <DashboardPage />,
             roles: [Role.ADMIN],
-            errorElement: <ErrorElement />
+            errorElement: <ErrorElement />,
           },
         ],
       },
@@ -35,7 +34,7 @@ export const routesConfig: RouteConfig[] = [
             path: ':id',
             component: <DashboardPage />,
             roles: [Role.ADMIN],
-            errorElement: <ErrorElement />
+            errorElement: <ErrorElement />,
           },
         ],
       },

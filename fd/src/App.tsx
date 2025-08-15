@@ -14,27 +14,16 @@ const App: React.FC = () => {
 
   if (!isLogined) {
     const allowedRoutes = filterRoutesByRole(preRoute, Role.GUEST);
-    return (
-      <Routes>
-        {renderRoutes(allowedRoutes)}
-      </Routes>
-    );
-
+    return <Routes>{renderRoutes(allowedRoutes)}</Routes>;
   }
 
   if (isLogined && userDetails?.user.role) {
     const allowedRoutes = filterRoutesByRole(postRoute, userDetails?.user.role);
 
-    return (
-      <Routes>
-        {renderRoutes(allowedRoutes)}
-      </Routes>
-    );
+    return <Routes>{renderRoutes(allowedRoutes)}</Routes>;
   }
 
   return <AppInitializer />;
-
-
 };
 
 export default App;

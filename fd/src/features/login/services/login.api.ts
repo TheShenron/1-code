@@ -1,8 +1,7 @@
 import api from '@/services/api';
-import { getLoginResponseSchema, loginDTO, LoginResponse } from '../schema/login.schema';
+import { getLoginResponseSchema, Login, LoginResponse } from '../schema/login.schema';
 
-
-export const login = async(payload: loginDTO): Promise<LoginResponse> => {
+export const login = async (payload: Login): Promise<LoginResponse> => {
   const { data: respData } = await api.post('/auth/login', payload);
   const { success, data, error } = getLoginResponseSchema.safeParse(respData);
   if (!success) {

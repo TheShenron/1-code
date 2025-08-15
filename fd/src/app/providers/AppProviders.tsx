@@ -19,7 +19,6 @@ export const AppProviders = ({ children }: { children: ReactNode }): ReactElemen
           <BrowserRouter>{children}</BrowserRouter>
         </ThemeProvider>
       </PersistGate>
-
     </Provider>
     <ReactQueryDevtools initialIsOpen={false} />
   </QueryClientProvider>

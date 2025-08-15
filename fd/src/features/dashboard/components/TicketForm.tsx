@@ -2,46 +2,65 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  Dialog, DialogTitle, DialogContent, DialogActions,
-  Button, TextField, MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+  MenuItem,
   InputAdornment,
 } from '@mui/material';
-import { CreateTicket, UpdateTicket, CreateTicketInput, createTicketSchema, Ticket, Ticketreporter } from '../schema/tickect.schema';
+import {
+  CreateTicket,
+  UpdateTicket,
+  CreateTicketInput,
+  createTicketSchema,
+  Ticket,
+  Ticketreporter,
+} from '../schema/tickect.schema';
 
 interface BaseProps {
-    open: boolean;
-    onClose: () => void;
-    reporter: Ticketreporter[];
+  open: boolean;
+  onClose: () => void;
+  reporter: Ticketreporter[];
 }
-
 interface CreateProps extends BaseProps {
-    mode: 'create';
-    // eslint-disable-next-line no-unused-vars
-    onSubmit: (data: CreateTicket) => void;
-    initialData?: never;
-    onDelete?: never;
+  mode: 'create';
+  onSubmit: (_data: CreateTicket) => void;
+  initialData?: never;
+  onDelete?: never;
 }
-
 interface UpdateProps extends BaseProps {
-    mode: 'update';
-    // eslint-disable-next-line no-unused-vars
-    onSubmit: (data: UpdateTicket) => void;
-    initialData: Ticket;
-    // eslint-disable-next-line no-unused-vars
-    onDelete: (id: string) => void;
+  mode: 'update';
+  onSubmit: (_data: UpdateTicket) => void;
+  initialData: Ticket;
+  onDelete: (_id: string) => void;
 }
-
 type TicketFormProps = CreateProps | UpdateProps;
 
-const skipTitlesSet = new Set([
-  'Daily Standup / Daily Sync',
-  'Stakeholder, Ad-hoc and Internal Meetings'
-].map(title => title.toLowerCase()));
+const skipTitlesSet = new Set(
+  ['Daily Standup / Daily Sync', 'Stakeholder, Ad-hoc and Internal Meetings'].map(title =>
+    title.toLowerCase()
+  )
+);
 
-
-export const TicketForm: React.FC<TicketFormProps> = ({ open, onClose, onSubmit, onDelete, initialData, mode = 'create', reporter }) => {
-
-  const { register, handleSubmit, formState: { errors }, reset, watch } = useForm<CreateTicketInput>({
+const TicketForm: React.FC<TicketFormProps> = ({
+  open,
+  onClose,
+  onSubmit,
+  onDelete,
+  initialData,
+  mode = 'create',
+  reporter,
+}) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    watch,
+  } = useForm<CreateTicketInput>({
     resolver: zodResolver(createTicketSchema),
     defaultValues: {
       title: '',
@@ -57,8 +76,7 @@ export const TicketForm: React.FC<TicketFormProps> = ({ open, onClose, onSubmit,
   const currentTitle = watch('title') || '';
   const shouldHideDeleteButton = skipTitlesSet.has(currentTitle.toLowerCase());
 
-  const handleFormSubmit = async(data: CreateTicketInput): Promise<void> => {
-
+  const handleFormSubmit = async (data: CreateTicketInput): Promise<void> => {
     const parsedData = createTicketSchema.parse(data);
 
     if (mode === 'update') {
@@ -66,16 +84,13 @@ export const TicketForm: React.FC<TicketFormProps> = ({ open, onClose, onSubmit,
         ...parsedData,
         id: initialData!._id,
       };
-      // eslint-disable-next-line no-unused-vars
-      (onSubmit as (data: UpdateTicket) => void)(updateData);
+      (onSubmit as (_data: UpdateTicket) => void)(updateData);
     } else {
-      // eslint-disable-next-line no-unused-vars
-      (onSubmit as (data: CreateTicket) => void)(parsedData);
+      (onSubmit as (_data: CreateTicket) => void)(parsedData);
     }
 
     reset();
   };
-
 
   const handleTicketDelete = (): void => {
     onDelete?.(initialData?._id ?? '');
@@ -119,9 +134,13 @@ export const TicketForm: React.FC<TicketFormProps> = ({ open, onClose, onSubmit,
             value={selectedReporter || ''}
             disabled={mode === 'update'}
           >
-            <MenuItem value=""><em>Select reporter</em></MenuItem>
+            <MenuItem value="">
+              <em>Select reporter</em>
+            </MenuItem>
             {reporter.map(rep => (
-              <MenuItem key={rep._id} value={rep._id}>{rep.name}</MenuItem>
+              <MenuItem key={rep._id} value={rep._id}>
+                {rep.name}
+              </MenuItem>
             ))}
           </TextField>
           <TextField
@@ -166,13 +185,26 @@ export const TicketForm: React.FC<TicketFormProps> = ({ open, onClose, onSubmit,
             disabled={mode === 'update'}
           >
             {['open', 'inprogress', 'inpending', 'blocked', 'qa_review'].map(state => (
-              <MenuItem key={state} value={state}>{state}</MenuItem>
+              <MenuItem key={state} value={state}>
+                {state}
+              </MenuItem>
             ))}
           </TextField>
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
-          {mode === 'update' && !shouldHideDeleteButton && <Button variant='contained' color='error' sx={{ mr: 'auto' }} onClick={handleTicketDelete}>Delete</Button>}
-          <Button variant='outlined' color='error' onClick={onClose}>Cancel</Button>
+          {mode === 'update' && !shouldHideDeleteButton && (
+            <Button
+              variant="contained"
+              color="error"
+              sx={{ mr: 'auto' }}
+              onClick={handleTicketDelete}
+            >
+              Delete
+            </Button>
+          )}
+          <Button variant="outlined" color="error" onClick={onClose}>
+            Cancel
+          </Button>
           <Button type="submit" variant="contained" color="primary">
             {mode === 'update' ? 'Update' : 'Create'}
           </Button>
@@ -181,3 +213,5 @@ export const TicketForm: React.FC<TicketFormProps> = ({ open, onClose, onSubmit,
     </Dialog>
   );
 };
+
+export default TicketForm;

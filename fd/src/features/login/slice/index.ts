@@ -2,25 +2,25 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Role } from '@/app/types/roles';
 
 interface UserDetails {
-    token: string,
-    user: {
-        name: string;
-        email: string;
-        _id: string;
-        role: Role,
-    }
+  token: string;
+  user: {
+    name: string;
+    email: string;
+    _id: string;
+    role: Role;
+  };
 }
 
 interface GlobalState {
-    userDetails: UserDetails | null;
-    isLogined: boolean,
-    token: string | null
+  userDetails: UserDetails | null;
+  isLogined: boolean;
+  token: string | null;
 }
 
 const initialState: GlobalState = {
   userDetails: null,
   isLogined: false,
-  token: null
+  token: null,
 };
 
 const loginSlice = createSlice({
@@ -35,8 +35,6 @@ const loginSlice = createSlice({
   },
 });
 
-export const {
-  setUserDetails
-} = loginSlice.actions;
+export const { setUserDetails } = loginSlice.actions;
 
 export default loginSlice.reducer;

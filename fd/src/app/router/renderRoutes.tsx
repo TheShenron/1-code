@@ -1,10 +1,9 @@
 import { Route } from 'react-router-dom';
 import { JSX } from 'react';
-import { RouteConfig } from '@/features/signup/types/route.types';
+import { RouteConfig } from '../types/roles';
 
 export const renderRoutes = (routes: RouteConfig[]): JSX.Element[] => {
-  return routes.map((route) => {
-
+  return routes.map(route => {
     return (
       <Route
         key={route.path}
