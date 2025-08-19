@@ -19,6 +19,8 @@ app.set('trust proxy', 1);
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
 import ticketRoutes from './routes/ticket.routes';
+import snapShotRoutes from './routes/snapshot.routes';
+
 
 // Health check route
 app.get('/', (req: Request, res: Response) => {
@@ -29,6 +31,8 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/ticket', ticketRoutes);
+app.use('/api/snapshot', snapShotRoutes);
+
 
 // Global error handler (optional)
 app.use(responseWrapper);

@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { Button, Stack } from '@mui/material';
-import { useCreateTicketMutation, useTasksMutation } from '../services/query';
+import { useCreateTicketMutation, useSnapshotMutation, useTasksMutation } from '../services/query';
 import { RootState } from '@/app/store';
 import { useSelector } from 'react-redux';
 import { CreateTicket } from '../schema/tickect.schema';
 import { downloadTicketsAsCSV } from '../utils/apTasksToColumns';
 import TicketForm from './TicketForm';
+import { toast } from 'react-toastify';
 
 export const CreateTicketDialogContainer: React.FC = () => {
   const user = useSelector((state: RootState) => state.login?.userDetails?.user);
   const [open, setOpen] = useState(false);
   const { mutateAsync } = useCreateTicketMutation();
   const { mutateAsync: getTaskMutation } = useTasksMutation();
+  const { mutateAsync: snapShotMutation } = useSnapshotMutation();
 
   const handleOpen = (): void => setOpen(true);
   const handleClose = (): void => setOpen(false);
@@ -36,11 +38,29 @@ export const CreateTicketDialogContainer: React.FC = () => {
     }
   };
 
+  const handleSnapShot = async (): Promise<void> => {
+    try {
+      if (!user?._id) return;
+      const data = await getTaskMutation(user?._id);
+      const ticket = data.data.tickets;
+      const { message } = await snapShotMutation({
+        userId: user?._id,
+        ticketIds: ticket.map(item => item._id),
+      });
+      toast.success(message);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   if (!user) return 'Logined ID Not Found...';
 
   return (
     <>
       <Stack direction="row" gap={2}>
+        <Button variant="outlined" color="warning" onClick={handleSnapShot}>
+          SnapShot
+        </Button>
         <Button variant="outlined" color="success" onClick={handleExportData}>
           Export Data
         </Button>

@@ -8,11 +8,23 @@ import {
   UpdateTicket,
   CreateTasksResponse,
 } from '../schema/tickect.schema';
+import { CreateSnapshot, CreateSnapshotResp, createSnapshotResp } from '../schema/snapShot.schema';
 
 export const getTickets = async (reporterId: string): Promise<GetTasksResponse> => {
   const { data: respData } = await api.get(`/ticket/reporter/${reporterId}`);
 
   const result = getTasksResponseSchema.safeParse(respData);
+  if (!result.success) {
+    console.error('Zod validation failed:', result.error);
+    throw new Error('Invalid task data from API');
+  }
+  return result.data;
+};
+
+export const takeSnapShot = async (payload: CreateSnapshot): Promise<CreateSnapshotResp> => {
+  const { data } = await api.post(`/snapshot`, payload);
+
+  const result = createSnapshotResp.safeParse(data);
   if (!result.success) {
     console.error('Zod validation failed:', result.error);
     throw new Error('Invalid task data from API');

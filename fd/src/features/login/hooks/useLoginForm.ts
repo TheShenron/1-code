@@ -6,9 +6,11 @@ import { login } from '../services/login.api';
 import { useDispatch } from 'react-redux';
 import { setUserDetails } from '../slice';
 import { Login, loginSchema } from '../schema/login.schema';
+import { AxiosError } from 'axios';
 
 export const useLoginForm = (): UseFormReturn<Login> & {
   onSubmit: () => void;
+  isPending: boolean;
 } => {
   const dispatch = useDispatch();
 
@@ -23,12 +25,17 @@ export const useLoginForm = (): UseFormReturn<Login> & {
   const createUserMutation = useMutation({
     mutationFn: login,
     onSuccess: data => {
-      console.info('Login successfully:', data);
-      dispatch(setUserDetails(data));
-      // maybe redirect or show success toast here
+      const { data: userData } = data;
+      dispatch(setUserDetails(userData));
     },
     onError: error => {
       console.error('Login failed:', error);
+      const axiosError = error as AxiosError<{ message: string }>;
+      const message = axiosError.response?.data?.message || 'Login failed';
+      methods.setError('root', {
+        type: 'manual',
+        message,
+      });
     },
   });
 
@@ -36,5 +43,5 @@ export const useLoginForm = (): UseFormReturn<Login> & {
     createUserMutation.mutate(formData);
   });
 
-  return { ...methods, onSubmit };
+  return { ...methods, onSubmit, isPending: createUserMutation.isPending };
 };

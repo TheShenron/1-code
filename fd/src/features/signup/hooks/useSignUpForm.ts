@@ -6,9 +6,11 @@ import { createUser } from '../services/signup.api';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { SignupForm, signupFormSchema } from '../schema/signup.schema';
+import { toast } from 'react-toastify';
 
 export const useSignUpForm = (): UseFormReturn<SignupForm> & {
   onSubmit: () => void;
+  isPending: boolean;
 } => {
   const navigate = useNavigate();
 
@@ -25,9 +27,12 @@ export const useSignUpForm = (): UseFormReturn<SignupForm> & {
   const createUserMutation = useMutation({
     mutationFn: createUser,
     onSuccess: data => {
-      console.info('User created successfully:', data);
-      navigate('/');
-      // maybe redirect or show success toast here
+      const { message } = data;
+      toast.success(message, {
+        onClose: () => {
+          navigate('/');
+        },
+      });
     },
     onError: error => {
       console.error('User creation failed:', error);
@@ -38,5 +43,5 @@ export const useSignUpForm = (): UseFormReturn<SignupForm> & {
     createUserMutation.mutate(formData);
   });
 
-  return { ...methods, onSubmit };
+  return { ...methods, onSubmit, isPending: createUserMutation.isPending };
 };

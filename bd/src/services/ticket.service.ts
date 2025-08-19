@@ -4,8 +4,8 @@ import { ERROR_MESSAGES } from '../constants/errors.constant'
 import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
 const { CREATE_FAILED, UPDATE_FAILED, NOT_FOUND, DELETE_FAILED } = ERROR_MESSAGES.TICKET
-import dayjs from "dayjs";
 import { createdTicketResp, CreatedTicketResp, CreateTicket, GetTicketById, GetTicketByID, TicketUser, } from "../schemas/ticket.schema";
+import { DateTime } from 'luxon'
 
 export const createTickets = async (data: CreateTicket): Promise<CreatedTicketResp> => {
 
@@ -128,19 +128,18 @@ export const fineUpdateTicketsByID = async (ticketData: GetTicketById): Promise<
                 StatusCodes.NOT_FOUND,
             );
         }
-
-        const now = dayjs();
+        const now = DateTime.now();
 
         const lastHistory = ticket.statusHistory[ticket.statusHistory.length - 1];
         if (lastHistory && !lastHistory.exitedAt) {
-            lastHistory.exitedAt = now.toDate();
+            lastHistory.exitedAt = now.toJSDate();
         }
 
         ticket.currentState = newState;
-        ticket.currentStateStartedAt = now.toDate();
+        ticket.currentStateStartedAt = now.toJSDate();
         ticket.statusHistory.push({
             state: newState,
-            enteredAt: now.toDate(),
+            enteredAt: now.toJSDate(),
         });
 
         const saved = await ticket.save();

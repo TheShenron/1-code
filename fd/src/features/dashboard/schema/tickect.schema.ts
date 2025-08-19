@@ -29,7 +29,7 @@ export const ticketHistorySchema = z.object({
   state: ticketStatusSchema,
   enteredAt: z.coerce.date(),
   exitedAt: z.coerce.date().nullable().optional(),
-  _id: z.string(),
+  _id: z.string().optional(),
 });
 export type TicketHistory = z.infer<typeof ticketHistorySchema>;
 

@@ -7,6 +7,8 @@ import theme from '@/styles/theme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { PersistGate } from 'redux-persist/integration/react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Create a client
 const queryClient = new QueryClient();
@@ -17,6 +19,7 @@ export const AppProviders = ({ children }: { children: ReactNode }): ReactElemen
       <PersistGate loading={null} persistor={persistor}>
         <ThemeProvider theme={theme}>
           <BrowserRouter>{children}</BrowserRouter>
+          <ToastContainer position="bottom-left" autoClose={2000} newestOnTop />
         </ThemeProvider>
       </PersistGate>
     </Provider>

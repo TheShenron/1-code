@@ -6,7 +6,8 @@ const userSchema = new Schema<Signup>(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role: { type: String, required: true }
+    role: { type: String, required: true },
+    timezone: { type: String, default: 'Asia/Kolkata' },
   },
   { timestamps: true }
 );

@@ -6,7 +6,14 @@ import {
   UseQueryResult,
   UseMutationResult,
 } from '@tanstack/react-query';
-import { createTicket, deleteTicket, getTickets, updateTicket, updateTicketStatus } from './api';
+import {
+  createTicket,
+  deleteTicket,
+  getTickets,
+  takeSnapShot,
+  updateTicket,
+  updateTicketStatus,
+} from './api';
 import {
   CreateTasksResponse,
   CreateTicket,
@@ -14,6 +21,7 @@ import {
   TicketStatus,
   UpdateTicket,
 } from '../schema/tickect.schema';
+import { CreateSnapshot, CreateSnapshotResp } from '../schema/snapShot.schema';
 
 const MILLISECOND = 1000;
 const SECONDS_IN_MINUTE = 60;
@@ -33,6 +41,16 @@ export const useTasksQuery = (reporterId?: string): UseQueryResult<GetTasksRespo
 export const useTasksMutation = (): UseMutationResult<GetTasksResponse, Error, string> => {
   return useMutation({
     mutationFn: (reporterId: string) => getTickets(reporterId),
+  });
+};
+
+export const useSnapshotMutation = (): UseMutationResult<
+  CreateSnapshotResp,
+  Error,
+  CreateSnapshot
+> => {
+  return useMutation({
+    mutationFn: (data: CreateSnapshot) => takeSnapShot(data),
   });
 };
 

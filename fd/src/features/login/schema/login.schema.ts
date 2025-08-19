@@ -26,3 +26,4 @@ export const getLoginResponseSchema = z.object({
   message: z.string(),
   success: z.boolean(),
 });
+export type GetLoginResponse = z.infer<typeof getLoginResponseSchema>;
