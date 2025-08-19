@@ -3,6 +3,8 @@ import jwt from 'jsonwebtoken';
 import { AppError } from '../utils/AppError';
 import { StatusCodes } from 'http-status-codes';
 import { AuthRequest, UserPayload } from '../schemas/authSchemas';
+import { ERROR_MESSAGES } from '../constants/errors.constant'
+const { AUTH } = ERROR_MESSAGES
 
 const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
 
@@ -11,8 +13,8 @@ export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction)
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         throw new AppError(
-            'UNAUTHORIZED',
-            'No token provided',
+            AUTH.UNAUTHORIZED.code,
+            AUTH.UNAUTHORIZED.message,
             StatusCodes.UNAUTHORIZED
         );
     }

@@ -6,7 +6,7 @@ import { signupSchema } from '../schemas/authSchemas';
 
 const router = Router();
 
-router.use(signupLimiter)
+// router.use(signupLimiter)
 
 router.post('/', validateRequest({ body: signupSchema }), createUser);
 

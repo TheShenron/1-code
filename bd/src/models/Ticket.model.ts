@@ -1,6 +1,6 @@
 import mongoose, { Schema, Types } from 'mongoose';
 import { TicketBase, TicketHistory, ticketStatuses } from '../schemas/ticket.schema';
-interface TicketModelType extends Omit<TicketBase, 'reporter'> {
+export interface TicketModelType extends Omit<TicketBase, 'reporter'> {
     reporter: Types.ObjectId;
     currentStateStartedAt: Date;
     statusHistory: TicketHistory[];

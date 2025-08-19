@@ -6,7 +6,7 @@ import { loginSchema } from '../schemas/authSchemas';
 
 const router = express.Router();
 
-router.use(loginLimiter)
+// router.use(loginLimiter)
 
 router.post('/login', validateRequest({ body: loginSchema }), login);
 

@@ -12,7 +12,7 @@ export const SUCCESS_MESSAGES = {
     USER: {
         CREATED: {
             code: 'USER_CREATED',
-            message: 'User account successfully created'
+            message: 'Boom! Your account is live!'
         }
     },
     TICKET: {
@@ -25,4 +25,14 @@ export const SUCCESS_MESSAGES = {
             message: 'Ticket retrieved successfully'
         }
     },
+    SNAPSHOT: {
+        CREATED: {
+            code: 'SNAPSHOT_CREATED',
+            message: 'Snapshot saved successfully'
+        },
+        FETCHED: {
+            code: 'SNAPSHOT_FETCHED',
+            message: 'Snapshot retrieved successfully'
+        }
+    }
 };

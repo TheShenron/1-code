@@ -1,21 +1,18 @@
 // features/auth/components/SignUpForm.tsx
 import { Box, Button, MenuItem, TextField, Typography } from '@mui/material';
-import { UseFormReturn } from 'react-hook-form';
 import { Role } from '@/app/types/roles';
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
-import { SignupForm } from '../schema/signup.schema';
+import { useSignUpForm } from '../hooks/useSignUpForm';
 
-interface Props {
-  form: UseFormReturn<SignupForm>;
-  onSubmit: () => void;
-}
+const roleOptions = [Role.ADMIN, Role.GUEST, Role.USER];
 
-const roleOptions = ['GUEST'];
-
-export const SignUpForm: React.FC<Props> = ({ form, onSubmit }) => {
+export const SignUpForm: React.FC = () => {
+  const form = useSignUpForm();
   const {
     register,
+    onSubmit,
+    isPending,
     formState: { errors },
   } = form;
 
@@ -80,10 +77,10 @@ export const SignUpForm: React.FC<Props> = ({ form, onSubmit }) => {
         ))}
       </TextField>
 
-      <Button variant="contained" type="submit">
+      <Button variant="contained" type="submit" disabled={isPending}>
         Submit
       </Button>
-      <Button variant="contained" onClick={navSignup}>
+      <Button variant="contained" onClick={navSignup} disabled={isPending}>
         Login
       </Button>
     </Box>

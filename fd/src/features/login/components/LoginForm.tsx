@@ -1,19 +1,17 @@
 // features/auth/components/SignUpForm.tsx
 import { Box, Button, TextField, Typography } from '@mui/material';
-import { UseFormReturn } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { Login } from '../schema/login.schema';
+import { useLoginForm } from '../hooks/useLoginForm';
 
-interface Props {
-  form: UseFormReturn<Login>;
-  onSubmit: () => void;
-}
-
-export const LoginForm: React.FC<Props> = ({ form, onSubmit }) => {
+export const LoginForm: React.FC = () => {
+  const form = useLoginForm();
   const {
     register,
+    onSubmit,
+    isPending,
     formState: { errors },
   } = form;
+
   const navigate = useNavigate();
 
   const navSignup = (): void => {
@@ -35,6 +33,8 @@ export const LoginForm: React.FC<Props> = ({ form, onSubmit }) => {
     >
       <Typography variant="h5">Login Up</Typography>
 
+      {errors.root && <div>{errors.root.message}</div>}
+
       <TextField
         placeholder="Email"
         autoComplete="email"
@@ -52,10 +52,10 @@ export const LoginForm: React.FC<Props> = ({ form, onSubmit }) => {
         helperText={errors.password?.message}
       />
 
-      <Button variant="contained" type="submit">
+      <Button variant="contained" type="submit" disabled={isPending}>
         Login
       </Button>
-      <Button variant="contained" onClick={navSignup}>
+      <Button variant="contained" onClick={navSignup} disabled={isPending}>
         Signup
       </Button>
     </Box>
