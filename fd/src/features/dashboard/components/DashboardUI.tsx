@@ -8,6 +8,7 @@ import { UpdateTicketDialogContainer } from './UpdateTicketDialogContainer';
 import TimeDisplay from './TimerDisplay';
 import { RootState } from '@/app/store';
 import { useSelector } from 'react-redux';
+import { TeamMembersAvatarGroup } from './TeamMembersAvatarGroup';
 
 interface DashboardUIProps {
   columns: ColumnMap;
@@ -38,13 +39,16 @@ const DashboardUI: React.FC<DashboardUIProps> = ({
   return (
     <Box p={2}>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Box mb={5}>
+        <Box>
           <Typography variant="h4" pb={1} textTransform="capitalize">
             Hi {userDetails?.name}
           </Typography>
           <Typography>Time to build something cool. Let’s make it count today! 🚀</Typography>
         </Box>
         <CreateTicketDialogContainer />
+      </Stack>
+      <Stack py={2}>
+        <TeamMembersAvatarGroup />
       </Stack>
       {Object.keys(columns ?? {}).length > 0 && (
         <Stack direction="row" overflow="auto" spacing={2}>
