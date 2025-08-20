@@ -61,3 +61,11 @@ export const updateTicketStatus = async (
   return data;
   //here we need to check reponse and add the response type insted of promise<void>
 };
+
+export const getAllUser = async (): Promise<any> => {
+  const { data } = await api.get(`/users`);
+  return data;
+  //here we need to check reponse and add the response type insted of promise<void>
+};
+
+

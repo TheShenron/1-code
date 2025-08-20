@@ -21,6 +21,10 @@ export const useDashboard = (tasks: Ticket[]): UseDashboardReturnType => {
     if (tasks.length) {
       setColumns(mapTasksToColumns(tasks));
     }
+
+    if (!tasks.length) {
+      setColumns(null)
+    }
   }, [tasks]);
 
   const onDragStart = (start: { source: { droppableId: string } }): void => {

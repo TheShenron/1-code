@@ -13,6 +13,10 @@ export const SUCCESS_MESSAGES = {
         CREATED: {
             code: 'USER_CREATED',
             message: 'Boom! Your account is live!'
+        },
+        FETCHED_ALL: {
+            code: 'USERS_FETCHED',
+            message: 'Successfully fetched all users.'
         }
     },
     TICKET: {

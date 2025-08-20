@@ -69,3 +69,8 @@ export const signupUser = async (data: Signup) => {
     return { user: userObj };
 
 };
+
+export const getAllUsers = async () => {
+    const users = await User.find().select('-password');
+    return { users }
+};

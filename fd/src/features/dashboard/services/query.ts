@@ -9,6 +9,7 @@ import {
 import {
   createTicket,
   deleteTicket,
+  getAllUser,
   getTickets,
   takeSnapShot,
   updateTicket,
@@ -112,5 +113,13 @@ export const useUpdateTicketStateMutation = (): UseMutationResult<
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['dashboard', 'tasks'] });
     },
+  });
+};
+
+export const getAllUserQuery = () => {
+  return useQuery({
+    queryKey: ['dashboard', 'all_users',],
+    queryFn: () => getAllUser(),
+    staleTime: FIVE_MINUTES_IN_MS,
   });
 };

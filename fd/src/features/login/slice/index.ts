@@ -8,6 +8,7 @@ interface UserDetails {
     email: string;
     _id: string;
     role: Role;
+    timezone: string
   };
 }
 

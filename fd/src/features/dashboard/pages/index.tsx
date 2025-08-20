@@ -1,30 +1,51 @@
 // Dashboard/Dashboard.tsx
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/app/store';
 import DashboardUI from '@/features/dashboard/components/DashboardUI';
-import { useTasksQuery } from '../services/query';
+import { getAllUserQuery, useTasksQuery } from '../services/query';
 import { useDashboard } from '../hooks/useDashboard';
 import { Typography, Stack } from '@mui/material';
+import { setSelectedUser, setUsers } from '../slice';
 
 const Dashboard: React.FC = () => {
-  const Id = useSelector((state: RootState) => state.login?.userDetails?.user._id);
+  const dispatch = useDispatch();
 
-  const { data, isLoading, isError } = useTasksQuery(Id);
+  const loggedInUser = useSelector((state: RootState) => state.login?.userDetails?.user);
+  const selectedUser = useSelector((state: RootState) => state.users.selectedUser);
+
+  const { data: usersList, isLoading: userLoading, isError: userError } = getAllUserQuery();
+  const users = usersList?.data?.users
+
+  const { data, isLoading, isError } = useTasksQuery(selectedUser?._id);
   const tickets = data?.data.tickets || [];
   const { columns, onDragEnd, onDragStart, draggingFrom } = useDashboard(tickets);
 
-  if (!Id) {
-    return <div>Failed to fetch user_id form store.</div>;
+  useEffect(() => {
+    if (users?.length) {
+      dispatch(setUsers(users));
+      if (loggedInUser) {
+        dispatch(setSelectedUser(loggedInUser));
+      }
+    }
+  }, [users, loggedInUser]);
+
+  if (!selectedUser?._id) {
+    return (
+      <Stack mt="40vh" justifyContent="center" alignItems="center">
+        <Typography variant="h6">Clues found. Assembling identities... 👥✨</Typography>
+      </Stack>
+    );
   }
 
-  if (isLoading)
+  if (isLoading || userLoading)
     return (
       <Stack mt="40vh" justifyContent="center" alignItems="center">
         <Typography variant="h6">Hold tight! Your tasks are almost here... ⏳🎯</Typography>
       </Stack>
     );
-  if (isError)
+
+  if (isError || userError)
     return (
       <Stack mt="40vh" justifyContent="center" alignItems="center">
         <Typography variant="h6" color="error">
